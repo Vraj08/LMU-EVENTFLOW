@@ -1,24 +1,28 @@
-// Full homepage with responsive stacking, zoom effect, navbar, center text with animated lines, and full restoration
+// Full homepage with full restoration, dark mode improvements, OTP popup, and animations
 
 import React, { useState, useEffect } from "react";
-import Button from "./components/ui/Button";
-import { motion, useAnimation } from "framer-motion";
+import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import emailjs from "@emailjs/browser";
+import toast, { Toaster } from "react-hot-toast";
+import { Link } from "react-scroll";  // Import Link from react-scroll
 import {
   FaCalendarCheck,
   FaUserShield,
   FaHandshake,
   FaCogs,
   FaChartLine,
-  FaMobileAlt
+  FaMobileAlt,
+  FaMoon,
+  FaSun
 } from "react-icons/fa";
 
 const developers = [
   { name: "Vraj Patel", role: "Frontend Developer", image: "/assets/vraj.jpg" },
   { name: "Divy Patel", role: "Backend Developer", image: "/assets/divy.jpg" },
-  { name: "Jay Panchal", role: "DevOps Engineer", image: "/assets/jay.jpg" },
+  { name: "Jinil Patel", role: "UI/UX Designer", image: "/assets/jinil.jpg" },
   { name: "Ayush Prabhakar", role: "Product Owner", image: "/assets/ayush.jpg" },
-  { name: "Jinil Patel", role: "UI/UX Designer", image: "/assets/jinil.jpg" }
+  { name: "Jay Panchal", role: "DevOps Engineer", image: "/assets/jay.jpg" }
 ];
 
 const features = [
@@ -36,55 +40,219 @@ export default function HomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [sectionRef, isInView] = useInView({ triggerOnce: true });
   const animation = useAnimation();
+  const [email, setEmail] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+  const [otp, setOtp] = useState("");
+  const [generatedOtp, setGeneratedOtp] = useState("");
 
   useEffect(() => {
     if (isInView) animation.start({ opacity: 1, y: 0 });
-  }, [isInView]);
+  }, [isInView, animation]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setResendTimer(prev => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  useEffect(() => {
+    console.log("showLogin state changed to:", showLogin);
+  }, [showLogin]);
+  
+
+  const toastErrorStyle = {
+    style: {
+      fontSize: "1.2rem",
+      padding: "1.5rem",
+      background: darkMode ? "#330000" : "#fff0f0",
+      color: "#ff4d4d",
+      fontWeight: "bold",
+      border: "1px solid #ff4d4d"
+    },
+    iconTheme: {
+      primary: "#ff4d4d",
+      secondary: "white"
+    }
+  };
+
+  const toastSuccessStyle = {
+    style: {
+      fontSize: "1.2rem",
+      padding: "1.5rem",
+      background: darkMode ? "#333" : "#fefefe",
+      color: darkMode ? "#1e90ff" : "#1e3a8a",
+      fontWeight: "bold",
+      border: darkMode ? "1px solid #1e90ff" : "1px solid #1e3a8a"
+    },
+    iconTheme: {
+      primary: darkMode ? "#1e90ff" : "#1e3a8a",
+      secondary: "white"
+    }
+  };
+
+  const handleSendOTP = async () => {
+    // Prevent sending OTP if already sent or during the resend timer
+    if (otpSent || resendTimer > 0) return;
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@(lion\.)?lmu\.edu$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Only @lmu.edu or @lion.lmu.edu emails allowed.", toastErrorStyle);
+      return;
+    }
+
+    // Generate OTP
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    setGeneratedOtp(otpCode);
+    const expiryTime = new Date(Date.now() + 15 * 60 * 1000).toLocaleTimeString();
+
+    try {
+      await emailjs.send(
+        'service_l6jzklm',
+        'template_zjil5pn',
+        { email, otp: otpCode, time: expiryTime },
+        'hVmKXizEmPT4J7MGf'
+      );
+      toast.success("OTP sent to your email", toastSuccessStyle);
+      setOtpSent(true); // Set flag to prevent resending OTP
+      setResendTimer(60); // Start resend timer
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to send OTP. Please try again.", toastErrorStyle);
+    }
+  };
+
+  const handleVerifyOTP = () => {
+    if (otp === generatedOtp) {
+      toast.success("Email verified! Logging in...", toastSuccessStyle);
+      localStorage.setItem("lmuUser", JSON.stringify({
+        email,
+        role: email.includes("faculty") ? "faculty" : "student",
+        elevatedAccess: false
+      }));
+      setTimeout(() => {
+        setShowLogin(false);
+        window.location.href = email.includes("faculty") ? "/faculty-dashboard" : "/student-dashboard";
+      }, 1000);
+    } else {
+      toast.error("Incorrect OTP", toastErrorStyle);
+    }
+  };
 
   const themeClasses = darkMode
     ? "bg-gradient-to-br from-gray-900 to-gray-800 text-white"
     : "bg-gradient-to-br from-indigo-100 to-pink-100 text-black";
 
+  const headingColor = darkMode ? "text-yellow-400" : "text-indigo-800";
+
   return (
     <div className={`min-h-screen flex flex-col ${themeClasses} transition-colors duration-500`}>
-      {/* Navbar */}
+      <Toaster position="top-center" reverseOrder={false} />
+
       <motion.nav
-        className={`flex justify-between items-center px-10 sticky top-0 z-50 shadow-lg backdrop-blur-md bg-white/30 dark:bg-gray-900/50 rounded-b-xl transition-all duration-300 ${isScrolled ? "py-2" : "py-6"}`}
+        className={`flex justify-between items-center px-6 py-4 sticky top-0 z-50 shadow-lg backdrop-blur-md bg-white/30 dark:bg-gray-900/50 rounded-b-xl transition-all duration-300`}
         animate={{ paddingTop: isScrolled ? "0.5rem" : "1.5rem" }}
       >
-        <motion.h1
-          whileHover={{ scale: 1.05 }}
-          className="text-2xl font-black text-indigo-700 dark:text-white cursor-pointer drop-shadow-sm"
-        >
-          LMU EventFlow
-        </motion.h1>
-        <motion.div whileHover={{ scale: 1.1 }}>
-          <Button
-            className="text-white bg-indigo-600 px-6 py-2 rounded-xl shadow-md hover:shadow-xl hover:shadow-pink-400 dark:hover:shadow-pink-500 transition duration-300"
+        <h1 className={`text-2xl font-bold cursor-pointer drop-shadow-sm ${headingColor}`}>LMU EventFlow</h1>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="p-2 rounded-full bg-white/40 dark:bg-gray-700"
+          >
+            {darkMode ? <FaSun className="text-yellow-300" /> : <FaMoon className="text-indigo-700" />}
+          </button>
+          <button
             onClick={() => setShowLogin(true)}
+            className="bg-indigo-600 text-white px-4 py-2 rounded-xl shadow hover:shadow-xl hover:shadow-pink-400 dark:hover:shadow-yellow-500 transition"
           >
             Login
-          </Button>
-        </motion.div>
+          </button>
+        </div>
       </motion.nav>
 
-      {/* Hero Section */}
-      <section className="text-center py-10 px-4">
-        <h1 className="text-5xl font-extrabold text-indigo-800 dark:text-white mb-6">
-          Welcome to LMU EventFlow
-        </h1>
-        <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto">
-          A centralized platform to create, manage, and coordinate campus events — all in one place.
+      <AnimatePresence mode="wait">
+  {showLogin && (
+    <div className="fixed inset-0 bg-black bg-opacity-60 z-[9999] flex justify-center items-center">
+      <motion.div
+        key="login-popup"
+        initial={{ scale: 0.8, y: -30 }}
+        animate={{ scale: 1, y: 0 }}
+        exit={{ scale: 0.8, y: -30 }}
+        className="bg-white dark:bg-gray-800 p-8 rounded-2xl w-full max-w-2xl shadow-xl relative transition-all duration-300"
+      >
+        {/* Close Button */}
+        <button
+          onClick={() => setShowLogin(false)} // Close the modal when clicked
+          className="absolute right-4 top-2 text-2xl text-gray-700 dark:text-white hover:text-red-500"
+        >
+          &times;
+        </button>
+
+        {/* Modal Title */}
+        <h2 className="text-2xl font-bold mb-6 text-center text-indigo-600 dark:text-yellow-400">
+          Login with LMU Email
+        </h2>
+
+        {/* Email Input */}
+        <input
+          type="email"
+          placeholder="Enter your @lmu.edu or @lion.lmu.edu email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-4 rounded-lg border mb-6 dark:bg-gray-900 dark:border-gray-600 text-black dark:text-white"
+        />
+
+        {/* OTP Section */}
+        {otpSent ? (
+          <>
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="w-full p-4 rounded-lg border mb-6 dark:bg-gray-900 dark:border-gray-600 text-black dark:text-white"
+            />
+            <button
+              onClick={handleVerifyOTP}
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-lg"
+            >
+              Verify OTP
+            </button>
+          </>
+        ) : resendTimer > 0 ? (
+          <button disabled className="w-full bg-gray-400 text-white py-4 rounded-lg">
+            Resend in {resendTimer}s
+          </button>
+        ) : (
+          <button
+            onClick={handleSendOTP}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-lg"
+          >
+            Send OTP
+          </button>
+        )}
+      </motion.div>
+    </div>
+  )}
+</AnimatePresence>
+
+            {/* Hero Section */}
+            <section className="text-center py-10 px-4">
+        <h1 className={`text-5xl font-extrabold mb-6 ${headingColor}`}>Welcome to LMU EventFlow</h1>
+        <p className="text-lg text-black-700 dark:text-white-300 max-w-3xl mx-auto">
+          <span>
+            A centralized platform to create, manage, and coordinate campus events — all in one place.
+          </span>
         </p>
       </section>
 
-      {/* Animated Center Text Section */}
+      {/* Info Section */}
       <section className="flex flex-col items-center justify-center px-6 py-20 text-center">
         <motion.div
           initial={{ opacity: 0, y: -40 }}
@@ -96,7 +264,7 @@ export default function HomePage() {
             initial={{ opacity: 0, x: -60 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-gray-700 dark:text-gray-300 text-lg mb-4"
+            className="text-lg mb-4 text-gray-700 dark:text-gray-300"
           >
             Your one-stop solution for campus event management.
           </motion.p>
@@ -104,7 +272,7 @@ export default function HomePage() {
             initial={{ opacity: 0, x: 60 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-gray-700 dark:text-gray-300 text-lg mb-4"
+            className="text-lg mb-4 text-gray-700 dark:text-gray-300"
           >
             Collaborate with departments, request resources, and track RSVPs with ease.
           </motion.p>
@@ -112,36 +280,39 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 0.6 }}
-            className="text-gray-700 dark:text-gray-300 text-lg"
+            className="text-lg text-gray-700 dark:text-gray-300"
           >
             LMU EventFlow turns your ideas into impactful, organized events.
           </motion.p>
         </motion.div>
       </section>
 
-      {/* Platform Highlights */}
-      <section className="text-center px-6 py-10">
-        <h2 className="text-4xl font-bold text-indigo-800 dark:text-white mb-10">Platform Highlights</h2>
-        <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-8 max-w-6xl mx-auto">
-          {features.map(({ icon: Icon, title, desc }, i) => (
-            <motion.div
-              key={i}
-              whileInView={{ opacity: 1, y: 0 }}
-              initial={{ opacity: 0, y: 60 }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="p-6 bg-white dark:bg-gray-800 shadow-xl rounded-2xl hover:shadow-indigo-400 dark:hover:shadow-pink-400 transition-all"
-            >
-              <div className="text-4xl text-indigo-600 dark:text-pink-400 mb-4">
-                <Icon />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">{title}</h3>
-              <p className="text-gray-600 dark:text-gray-300">{desc}</p>
-            </motion.div>
-          ))}
+      {/* Highlights Section */}
+<section id="highlights" className="text-center px-6 py-10">
+  <h2 className={`text-4xl font-bold mb-10 ${headingColor}`}>Platform Highlights</h2>
+  <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-8 max-w-6xl mx-auto">
+    {features.map(({ icon: Icon, title, desc }, i) => (
+      <motion.div
+        key={i}
+        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 60 }}
+        transition={{ duration: 0.6, delay: i * 0.1 }}
+        className="p-6 bg-white dark:bg-gray-800 shadow-xl rounded-2xl hover:shadow-indigo-400 dark:hover:shadow-yellow-400 transition-all"
+      >
+        {/* Icon and Title in Same Line */}
+        <div className="flex items-center space-x-2 mb-4">
+          <div className="text-4xl text-indigo-600 dark:text-yellow-400">
+            <Icon />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-white">{title}</h3>
         </div>
-      </section>
+        <p className="text-gray-600 dark:text-gray-300">{desc}</p>
+      </motion.div>
+    ))}
+  </div>
+</section>
 
-      {/* Meet Our Developers */}
+      {/* Developers Section */}
       <motion.div
         ref={sectionRef}
         initial={{ opacity: 0, y: 50 }}
@@ -149,7 +320,7 @@ export default function HomePage() {
         transition={{ duration: 1, type: "spring", bounce: 0.3 }}
         className="text-center px-6 pb-20"
       >
-        <h2 className="text-4xl font-bold text-gray-800 dark:text-white mb-10">Meet Our Developers</h2>
+        <h2 className={`text-4xl font-bold mb-10 ${headingColor}`}>Meet Our Developers</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
           {developers.map((dev, index) => (
             <motion.div
