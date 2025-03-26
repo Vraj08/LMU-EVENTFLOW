@@ -36,9 +36,3 @@
     transform: rotate(360deg);
   }
 }
-
-/* Remove blur effect from toast notifications */
-.react-toast-notifications__toast {
-  backdrop-filter: none !important;
-  filter: none !important;
-}

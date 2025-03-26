@@ -1,11 +1,16 @@
 import React from "react";
-import HomePage from "./HomePage"; // Make sure HomePage is in the same folder or update path
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import HomePage from "./HomePage";
+import StudentDashboard from "./StudentDashboard";
 
 function App() {
   return (
-    <div className="App">
-      <HomePage />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/student-dashboard" element={<StudentDashboard />} />
+      </Routes>
+    </Router>
   );
 }
 
