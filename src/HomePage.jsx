@@ -1,11 +1,9 @@
-// Full homepage with full restoration, dark mode improvements, OTP popup, and animations
-
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import emailjs from "@emailjs/browser";
 import toast, { Toaster } from "react-hot-toast";
-import { Link } from "react-scroll";  // Import Link from react-scroll
+import { Link } from "react-scroll";
 import {
   FaCalendarCheck,
   FaUserShield,
@@ -45,6 +43,9 @@ export default function HomePage() {
   const [resendTimer, setResendTimer] = useState(0);
   const [otp, setOtp] = useState("");
   const [generatedOtp, setGeneratedOtp] = useState("");
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
   useEffect(() => {
     if (isInView) animation.start({ opacity: 1, y: 0 });
@@ -62,10 +63,6 @@ export default function HomePage() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  useEffect(() => {
-    console.log("showLogin state changed to:", showLogin);
-  }, [showLogin]);
-  
 
   const toastErrorStyle = {
     style: {
@@ -98,50 +95,88 @@ export default function HomePage() {
   };
 
   const handleSendOTP = async () => {
-    // Prevent sending OTP if already sent or during the resend timer
     if (otpSent || resendTimer > 0) return;
-
     const emailRegex = /^[a-zA-Z0-9._%+-]+@(lion\.)?lmu\.edu$/;
     if (!emailRegex.test(email)) {
       toast.error("Only @lmu.edu or @lion.lmu.edu emails allowed.", toastErrorStyle);
       return;
     }
 
-    // Generate OTP
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
     setGeneratedOtp(otpCode);
     const expiryTime = new Date(Date.now() + 15 * 60 * 1000).toLocaleTimeString();
 
     try {
       await emailjs.send(
-        'service_l6jzklm',
-        'template_zjil5pn',
+        "service_l6jzklm",
+        "template_zjil5pn",
         { email, otp: otpCode, time: expiryTime },
-        'hVmKXizEmPT4J7MGf'
+        "hVmKXizEmPT4J7MGf"
       );
       toast.success("OTP sent to your email", toastSuccessStyle);
-      setOtpSent(true); // Set flag to prevent resending OTP
-      setResendTimer(60); // Start resend timer
+      setOtpSent(true);
+      setResendTimer(60);
     } catch (err) {
       console.error(err);
       toast.error("Failed to send OTP. Please try again.", toastErrorStyle);
     }
   };
 
-  const handleVerifyOTP = () => {
-    if (otp === generatedOtp) {
-      toast.success("Email verified! Logging in...", toastSuccessStyle);
-      localStorage.setItem("lmuUser", JSON.stringify({
-        email,
-        role: email.includes("faculty") ? "faculty" : "student",
-        elevatedAccess: false
-      }));
-      setTimeout(() => {
-        setShowLogin(false);
-        window.location.href = email.includes("faculty") ? "/faculty-dashboard" : "/student-dashboard";
-      }, 1000);
-    } else {
+  const handleVerifyOTP = async () => {
+    if (otp !== generatedOtp) {
       toast.error("Incorrect OTP", toastErrorStyle);
+      return;
+    }
+
+    toast.success("Email verified! Checking access...", toastSuccessStyle);
+
+    try {
+      const response = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+
+      if (response.status === 404) {
+        setShowNameModal(true);
+      } else {
+        const data = await response.json();
+        localStorage.setItem("eventflowUser", JSON.stringify({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email,
+          userType: data.userType
+        }));
+        setShowLogin(false);
+        window.location.href = data.userType === "faculty" ? "/faculty-dashboard" : "/student-dashboard";
+      }
+    } catch (error) {
+      toast.error("Backend error. Try again later.", toastErrorStyle);
+      console.error(error);
+    }
+  };
+
+  const handleNameSubmit = async () => {
+    const userType = email.endsWith("@lion.lmu.edu") ? "student" : "faculty";
+    try {
+      const response = await fetch("http://localhost:5000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, firstName, lastName, userType })
+      });
+      const data = await response.json();
+      localStorage.setItem("eventflowUser", JSON.stringify({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email,
+        userType: data.userType
+      }));
+      setShowNameModal(false);
+      setShowLogin(false);
+      window.location.href = data.userType === "faculty" ? "/faculty-dashboard" : "/student-dashboard";
+    } catch (error) {
+      toast.error("Failed to save user info", toastErrorStyle);
+      console.error(error);
     }
   };
 
@@ -153,7 +188,37 @@ export default function HomePage() {
 
   return (
     <div className={`min-h-screen flex flex-col ${themeClasses} transition-colors duration-500`}>
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster
+  position="top-center"
+  reverseOrder={false}
+  containerStyle={{ zIndex: 99999 }}  // ensures toast stays on top
+  toastOptions={{
+    style: {
+      backdropFilter: "none",
+      WebkitBackdropFilter: "none",
+      background: "#fff0f0",
+      color: "#cc0000",
+      border: "1px solid #cc0000",
+      fontWeight: "bold",
+      fontSize: "1.1rem",
+    },
+    success: {
+      style: {
+        background: "#f0fff0",
+        color: "#006400",
+        border: "1px solid #006400",
+      },
+    },
+    error: {
+      style: {
+        background: "#fff0f0",
+        color: "#cc0000",
+        border: "1px solid #cc0000",
+      },
+    },
+  }}
+/>
+
 
       <motion.nav
         className={`flex justify-between items-center px-6 py-4 sticky top-0 z-50 shadow-lg backdrop-blur-md bg-white/30 dark:bg-gray-900/50 rounded-b-xl transition-all duration-300`}
@@ -237,6 +302,41 @@ export default function HomePage() {
             Send OTP
           </button>
         )}
+        {showNameModal && (
+  <div className="fixed inset-0 bg-black bg-opacity-60 z-[9999] flex justify-center items-center">
+    <motion.div
+      key="name-popup"
+      initial={{ scale: 0.8, y: -30 }}
+      animate={{ scale: 1, y: 0 }}
+      exit={{ scale: 0.8, y: -30 }}
+      className="bg-white dark:bg-gray-800 p-8 rounded-2xl w-full max-w-2xl shadow-xl relative transition-all duration-300"
+    >
+      <h2 className="text-2xl font-bold mb-6 text-center text-indigo-600 dark:text-yellow-400">Complete Your Profile</h2>
+
+      <input
+        type="text"
+        placeholder="First Name"
+        value={firstName}
+        onChange={(e) => setFirstName(e.target.value)}
+        className="w-full p-4 rounded-lg border mb-4 dark:bg-gray-900 dark:border-gray-600 text-black dark:text-white"
+      />
+      <input
+        type="text"
+        placeholder="Last Name"
+        value={lastName}
+        onChange={(e) => setLastName(e.target.value)}
+        className="w-full p-4 rounded-lg border mb-6 dark:bg-gray-900 dark:border-gray-600 text-black dark:text-white"
+      />
+      <button
+        onClick={handleNameSubmit}
+        className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-lg"
+      >
+        Submit
+      </button>
+    </motion.div>
+  </div>
+)}
+
       </motion.div>
     </div>
   )}
