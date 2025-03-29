@@ -4,40 +4,50 @@ const Student = require("../models/student.js");
 
 // POST /api/login
 router.post("/login", async (req, res) => {
-  const { email, firstName, lastName, userType } = req.body;
+  const { email, firstName, lastName } = req.body;
 
   try {
     let user = await Student.findOne({ email });
 
     if (user) {
+      // Existing user: send saved data
       return res.status(200).json({
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
-        userType: user.userType,
-        newUser: false,
+        userType: user.userType
       });
     }
 
-    if (!firstName || !lastName || !userType) {
-      return res.status(404).json({ message: "Student not found" });
+    // New user: require name
+    if (!firstName || !lastName) {
+      return res.status(404).json({ message: "New user - name required" });
     }
 
-    user = await Student.create({ email, firstName, lastName, userType });
+    // Infer role from email domain
+    const userType = email.endsWith("@lion.lmu.edu") ? "student"
+                     : email.endsWith("@lmu.edu") ? "faculty"
+                     : null;
+
+    if (!userType) {
+      return res.status(400).json({ message: "Invalid email domain" });
+    }
+
+    const newUser = await Student.create({ email, firstName, lastName, userType });
 
     return res.status(201).json({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      userType: user.userType,
-      newUser: true,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      email: newUser.email,
+      userType: newUser.userType
     });
 
   } catch (err) {
-    console.error("❌ Error in /api/login:", err);
-    res.status(500).json({ message: "Server error" });
+    console.error("❌ /api/login error:", err);
+    return res.status(500).json({ message: "Server error" });
   }
 });
+
 
 // PUT /api/update-profile
 router.put("/update-profile", async (req, res) => {
@@ -68,5 +78,6 @@ router.put("/update-profile", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
 
 module.exports = router;

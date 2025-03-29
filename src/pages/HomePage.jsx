@@ -46,6 +46,24 @@ export default function HomePage() {
   const [showNameModal, setShowNameModal] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const dashboardRoutes = {
+    faculty: "/faculty-dashboard",
+    student: "/student-dashboard",
+    sodexo: "/sodexo-dashboard",
+    its: "/its-dashboard",
+    parking: "/parking-dashboard",
+    "event organization": "/event-organization-dashboard",
+    "facilities management": "/facilities-management-dashboard",
+    "campus graphics": "/campus-graphics-dashboard",
+    "campus safety": "/campus-safety-dashboard",
+    marketing: "/marketing-dashboard"
+  };
+  
+  const redirectToDashboard = (userType) => {
+    const route = dashboardRoutes[userType.toLowerCase()];
+    window.location.href = route || "/student-dashboard"; // fallback
+  };
+  
 
   useEffect(() => {
     if (isInView) animation.start({ opacity: 1, y: 0 });
@@ -127,59 +145,67 @@ export default function HomePage() {
       toast.error("Incorrect OTP", toastErrorStyle);
       return;
     }
-
+  
     toast.success("Email verified! Checking access...", toastSuccessStyle);
-
+  
     try {
       const response = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email })  // Only send email initially
       });
-
+  
       if (response.status === 404) {
+        // New user, show name form
         setShowNameModal(true);
       } else {
         const data = await response.json();
+  
         localStorage.setItem("eventflowUser", JSON.stringify({
           firstName: data.firstName,
           lastName: data.lastName,
-          email,
+          email: data.email,
           userType: data.userType
         }));
+  
         setShowLogin(false);
-        window.location.href = data.userType === "faculty" ? "/faculty-dashboard" : "/student-dashboard";
+        redirectToDashboard(data.userType);
+
       }
     } catch (error) {
       toast.error("Backend error. Try again later.", toastErrorStyle);
       console.error(error);
     }
   };
+  
 
   const handleNameSubmit = async () => {
-    const userType = email.endsWith("@lion.lmu.edu") ? "student" : "faculty";
     try {
       const response = await fetch("http://localhost:5000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, firstName, lastName, userType })
+        body: JSON.stringify({ email, firstName, lastName })
       });
+  
       const data = await response.json();
+  
       localStorage.setItem("eventflowUser", JSON.stringify({
         firstName: data.firstName,
         lastName: data.lastName,
-        email,
+        email: data.email,
         userType: data.userType
       }));
+  
       setShowNameModal(false);
       setShowLogin(false);
-      window.location.href = data.userType === "faculty" ? "/faculty-dashboard" : "/student-dashboard";
+      redirectToDashboard(data.userType);
+
     } catch (error) {
       toast.error("Failed to save user info", toastErrorStyle);
       console.error(error);
     }
   };
-
+  
   const themeClasses = darkMode
     ? "bg-gradient-to-br from-gray-900 to-gray-800 text-white"
     : "bg-gradient-to-br from-indigo-100 to-pink-100 text-black";

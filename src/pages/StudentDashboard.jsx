@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CardContent } from "./components/ui/Card";
-import { Button } from "./components/ui/Button";
+import { CardContent } from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
 import { motion } from "framer-motion";
 import { CalendarIcon, ClockIcon, LogOutIcon, PencilIcon, SunIcon, MoonIcon } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
@@ -174,12 +174,16 @@ export default function StudentDashboard() {
         {/* Dark Mode Toggle */}
         {/* Top Bar with Greeting and Right Icons */}
 <div className="flex justify-between items-center mb-8">
-  {/* Centered Greeting */}
-  <div className="w-full text-center">
-    <h1 className="text-4xl font-bold text-purple-700 dark:text-yellow-300">
-      {`Good ${new Date().getHours() < 12 ? "Morning" : new Date().getHours() < 18 ? "Afternoon" : "Evening"}, ${firstName}!`}
-    </h1>
-  </div>
+<div className="text-center w-full mb-1">  {/* Reduced margin-bottom to 4 */}
+  <motion.h1
+    initial={{ opacity: 0, y: -20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8, delay: 0.2 }}
+    className="text-5xl sm:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-purple-700 to-pink-600 text-transparent bg-clip-text drop-shadow-lg break-words leading-[1.3] sm:leading-[1.85]"
+  >
+    {`Good ${new Date().getHours() < 12 ? "Morning" : new Date().getHours() < 18 ? "Afternoon" : "Evening"}, ${firstName}!`}
+  </motion.h1>
+</div>
 
   {/* Right: Dark Mode Toggle + Avatar */}
   <div className="flex items-center gap-4 absolute top-5 right-5 z-50 text-center">
