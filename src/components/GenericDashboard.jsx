@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Tilt from 'react-parallax-tilt';
 import {
-  CalendarDays, PlusSquare, Boxes, Sliders
+  CalendarDays, PlusSquare, Boxes, Sliders,
+  School, MessageCircle
 } from "lucide-react";
+
 import toast, { Toaster } from "react-hot-toast";
 import DashboardTopbar from "./DashboardTopbar";
 
@@ -122,8 +124,20 @@ function GenericDashboard({ basePath = "/generic", roleName = "User" }) {
       icon: <Sliders className="w-8 h-8 text-purple-500 dark:text-blue-300" />,
       onClick: () => navigate(`${basePath}-dashboard/manage-events`),
     },
+    {
+      title: "Book Classrooms",
+      description: "Reserve available rooms for your upcoming events.",
+      icon: <School className="w-8 h-8 text-purple-500 dark:text-blue-300" />,
+      onClick: () => navigate(`${basePath}-dashboard/book-classroom`),
+    },
+    {
+      title: "View Messages",
+      description: "Check your chat messages with departments.",
+      icon: <MessageCircle className="w-8 h-8 text-purple-500 dark:text-blue-300" />,
+      onClick: () => navigate(`${basePath}-dashboard/messages`)
+    }    
   ];
-
+  
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
@@ -157,7 +171,7 @@ function GenericDashboard({ basePath = "/generic", roleName = "User" }) {
           </motion.h1>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-10 w-full max-w-5xl mt-16 mx-auto justify-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full max-w-6xl mt-16 mx-auto justify-items-center">
           {cardData.map((card, idx) => (
             <Tilt options={{ max: 15, scale: 1.05, speed: 500 }} key={idx} className="w-full">
               <motion.div

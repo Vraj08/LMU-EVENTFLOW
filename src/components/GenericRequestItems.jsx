@@ -67,8 +67,15 @@ export default function GenericRequestItems({ role = "User" }) {
 
     useEffect(() => {
         setCanNavigate(typeof navigate === 'function');
-    }, [navigate]);
-
+      
+        // ✅ Clear department after it's been used
+        const defaultDept = localStorage.getItem("chatDepartment");
+        if (defaultDept) {
+          localStorage.removeItem("chatDepartment");
+        }
+      }, [navigate]);
+      
+      
     const cardGradients = [
         "from-pink-100 to-purple-200",
         "from-blue-100 to-cyan-200",
@@ -226,7 +233,41 @@ export default function GenericRequestItems({ role = "User" }) {
                                     transition={{ duration: 0.5, delay: index * 0.15 }}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.96 }}
-                                    onClick={() => canNavigate && navigate(paths[index])}
+                                    onClick={() => {
+                                        const selectedDepartment = requestOptions[index];
+                                        localStorage.setItem("chatDepartment", selectedDepartment);
+                                      
+                                        const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
+                                        const rawRole = user?.role || user?.userType || "generic";
+                                        const role =
+                                          rawRole
+                                            .toLowerCase()
+                                            .split(" ")
+                                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                            .join(" "); // e.g., "facilities management" → "Facilities Management"
+                                      
+                                        console.log("🧠 Logged-in user object:", user);
+                                        console.log("🔑 Normalized role:", role);
+                                      
+                                        const rolePaths = {
+                                          Sodexo: "/sodexo-dashboard",
+                                          Its: "/its-dashboard",
+                                          Parking: "/parking-dashboard",
+                                          "Event Organization": "/event-organization-dashboard",
+                                          "Facilities Management": "/facilities-management-dashboard",
+                                          "Campus Graphics": "/campus-graphics-dashboard",
+                                          "Campus Safety": "/campus-safety-dashboard",
+                                          Marketing: "/marketing-dashboard",
+                                          Faculty: "/faculty-dashboard"
+                                        };
+                                      
+                                        const dashboardPath = rolePaths[role] || "/generic-dashboard";
+                                        console.log("📍 Final dashboardPath:", dashboardPath);
+                                      
+                                        navigate(`${dashboardPath}/messages`);
+                                      }}
+                                      
+                                                                                                           
                                     className={`group relative cursor-pointer rounded-3xl p-6 bg-gradient-to-br ${cardGradients[index]} dark:bg-zinc-900 border border-purple-200 dark:border-zinc-700 transition-all duration-300 overflow-hidden shadow-xl hover:shadow-2xl`}
                                     style={{ boxShadow: `0 0 20px 4px ${glowColors[index]}` }}
                                 >

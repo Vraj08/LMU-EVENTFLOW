@@ -7,4 +7,7 @@ const studentSchema = new mongoose.Schema({
   userType: { type: String, enum: ["student", "faculty"], required: true }
 });
 
-module.exports = mongoose.model("Student", studentSchema);  // ✅ Add this
+// Check if the model is already defined to prevent overwriting
+const Student = mongoose.models.Student || mongoose.model("Student", studentSchema);
+
+module.exports = Student;

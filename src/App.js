@@ -20,6 +20,9 @@ import CampusSafetyDashboard from './pages/CampusSafetyDashboard';
 import MarketingDashboard from './pages/MarketingDashboard';
 import GenericCreateEvent from "./components/GenericCreateEvent";
 import UpcomingEventsLayout from "./components/UpcomingEventsLayout";
+import ChatPage from "./pages/GenericChatPage";
+import GenericChatPage from "./pages/GenericChatPage"; // make sure this path is correct
+
 
 function App() {
   return (
@@ -29,7 +32,14 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />
         <Route path="/faculty-dashboard" element={<FacultyDashboard />} />
-
+        <Route path="/sodexo-dashboard/messages" element={<ChatPage />} />
+        <Route path="/its-dashboard/messages" element={<ChatPage />} />
+        <Route path="/parking-dashboard/messages" element={<ChatPage />} />
+        <Route path="/facilities-management-dashboard/messages" element={<ChatPage />} />
+        <Route path="/event-organization-dashboard/messages" element={<ChatPage />} />
+        <Route path="/campus-graphics-dashboard/messages" element={<ChatPage />} />
+        <Route path="/campus-safety-dashboard/messages" element={<ChatPage />} />
+        <Route path="/marketing-dashboard/messages" element={<ChatPage />} />
         <Route path="/generic-dashboard" element={<GenericDashboard />} />
 
         {/* New Role Dashboards */}
@@ -43,6 +53,8 @@ function App() {
         <Route path="/campus-safety/upcoming-events" element={<UpcomingEventsLayout role="Campus Safety" />} />
         <Route path="/marketing/upcoming-events" element={<UpcomingEventsLayout role="Marketing" />} />
         <Route path="/faculty/upcoming-events" element={<UpcomingEventsLayout role="Faculty" />} />
+
+        <Route path="/faculty/request-items/:department" element={<GenericChatPage />} />
 
         <Route path="/sodexo-dashboard" element={<SodexoDashboard />} />
         <Route path="/its-dashboard" element={<ITSDashboard />} />
