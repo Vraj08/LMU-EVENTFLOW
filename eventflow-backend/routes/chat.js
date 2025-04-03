@@ -2,8 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Message = require("../models/Message");
 const Chat = require("../models/Chat");
-const Student = require("../models/student");
-const Faculty = require("../models/faculty");
+const Student = require("../models/Student");
+const Faculty = require("../models/Faculty");
 const { getWSS } = require("../websocket");
 
 async function getFullName(email) {
