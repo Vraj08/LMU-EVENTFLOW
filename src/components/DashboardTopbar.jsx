@@ -24,7 +24,7 @@ export default function DashboardTopbar({
   const handleUpdateClick = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
-      const response = await fetch("http://localhost:5000/api/update-profile", {
+      const response = await fetch("${process.env.REACT_APP_BACKEND_URL}/api/update-profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

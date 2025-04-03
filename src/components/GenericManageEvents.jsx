@@ -51,7 +51,7 @@ export default function GenericManageEvents({ role = "User" }) {
     const handleProfileUpdate = async () => {
         try {
             const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
-            const response = await fetch("http://localhost:5000/api/update-profile", {
+            const response = await fetch("${process.env.REACT_APP_BACKEND_URL}/api/update-profile", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -86,7 +86,7 @@ export default function GenericManageEvents({ role = "User" }) {
         try {
             const user = JSON.parse(localStorage.getItem("eventflowUser"));
             const encodedEmail = encodeURIComponent(user.email);
-            const res = await axios.get(`http://localhost:5000/api/events/user/${encodedEmail}`);
+            const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events/user/${encodedEmail}`);
             setEvents(res.data.filter(e => e.isActive));
         } catch {
             toast.error("Failed to fetch events.");
@@ -95,7 +95,7 @@ export default function GenericManageEvents({ role = "User" }) {
 
     const handleDelete = async (eventId) => {
         try {
-            await axios.put(`http://localhost:5000/api/events/delete/${eventId}`, {
+            await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/events/delete/${eventId}`, {
                 isActive: false,
                 isApproved: false
             });

@@ -87,7 +87,7 @@ export default function GenericChatPage({ role: propRole }) {
 
   const handleProfileUpdate = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/update-profile", {
+      const response = await fetch("${process.env.REACT_APP_BACKEND_URL}/api/update-profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

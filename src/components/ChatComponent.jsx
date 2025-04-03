@@ -26,7 +26,7 @@ export default function ChatComponent({ user, department, defaultDepartment }) {
   const autoSelectedInitialChat = useRef(false);
 
 
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || '${process.env.REACT_APP_BACKEND_URL}';
   const WS_URL = BACKEND_URL.replace(/^http/, 'ws');
 
   useEffect(() => {

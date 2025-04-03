@@ -19,7 +19,7 @@ const UpcomingEventsLayout = ({ backPath = "/", role = "User" }) => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/events/all");
+        const res = await fetch("${process.env.REACT_APP_BACKEND_URL}/api/events/all");
         const data = await res.json();
         setEvents(data);
       } catch (err) {
@@ -90,7 +90,7 @@ const UpcomingEventsLayout = ({ backPath = "/", role = "User" }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/rsvps", {
+      const response = await fetch("${process.env.REACT_APP_BACKEND_URL}/api/rsvps", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ eventId, email }),

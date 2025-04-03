@@ -76,7 +76,7 @@ export default function GenericEditEvent({ role = "User" }) {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/events/${eventId}`);
+        const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events/${eventId}`);
         const data = res.data;
 
         setForm({
@@ -226,7 +226,7 @@ export default function GenericEditEvent({ role = "User" }) {
   const handleProfileUpdate = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
-      const response = await fetch("http://localhost:5000/api/update-profile", {
+      const response = await fetch("${process.env.REACT_APP_BACKEND_URL}/api/update-profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -274,7 +274,7 @@ export default function GenericEditEvent({ role = "User" }) {
     }
 
     try {
-      await axios.put(`http://localhost:5000/api/events/${eventId}`, {
+      await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/events/${eventId}`, {
         ...form,
       });
 
