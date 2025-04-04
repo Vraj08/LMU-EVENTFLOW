@@ -33,11 +33,11 @@ router.get("/chats/:user", async (req, res) => {
         }
 
         // Fix participant name alignment
-const participantNameMap = {};
-chat.participants.forEach((p, i) => {
-  participantNameMap[p] = participantNames[i];
-});
-
+        const sorted = chat.participants.map((p, i) => ({
+          email: p,
+          name: participantNames[i]
+        })).sort((a, b) => a.email.localeCompare(b.email));
+        
 return {
   chatId: chat.chatId,
   email: chat.chatId, // ✅ FIXED
