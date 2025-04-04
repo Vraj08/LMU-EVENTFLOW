@@ -36,6 +36,27 @@ export default function ChatComponent({ user, department, defaultDepartment }) {
       try {
         const res = await fetch(`${BACKEND_URL}/api/chat/chats/${user}`);
         const backendChats = await res.json();
+        // 🔧 Normalize participants and names alignment
+backendChats.forEach(chat => {
+  // Step 1: Rebuild participants from email if missing
+  if (!chat.participants && chat.email.includes('|')) {
+    chat.participants = chat.email.split('|');
+  }
+
+  // Step 2: Re-align names to the right participants
+  if (chat.participants?.length === 2 && chat.participantNames?.length === 2) {
+    const zipped = chat.participants.map((email, i) => ({
+      email,
+      name: chat.participantNames[i]
+    }));
+
+    const sorted = zipped.sort((a, b) => a.email.localeCompare(b.email));
+
+    chat.participants = sorted.map(p => p.email);
+    chat.participantNames = sorted.map(p => p.name);
+  }
+});
+
 
         let deptEmail = null;
         if (defaultDepartment) {
@@ -118,6 +139,7 @@ export default function ChatComponent({ user, department, defaultDepartment }) {
           throw new Error('Failed to fetch messages');
         }
         const data = await res.json();
+        
         setMessages(prev => {
           const existingIds = new Set(data.map(m => m._id));
           const combined = [...data];
@@ -155,7 +177,8 @@ export default function ChatComponent({ user, department, defaultDepartment }) {
     socket.onmessage = event => {
       try {
         const msg = JSON.parse(event.data);
-
+        console.log("📩 Incoming WS message:", msg);
+        
         if (msg.type === "typing") {
           setTypingIndicators(prev => ({ ...prev, [msg.sender]: true }));
           setTimeout(() => {
@@ -199,38 +222,53 @@ export default function ChatComponent({ user, department, defaultDepartment }) {
         setChats(prevChats => {
           let updated = false;
           const updatedChats = prevChats.map(chat => {
-            if (chat.email === chatPartner) {
+            if (chat.email === chatPartner || chat.email === [msg.sender, msg.recipient].sort().join('|')) {
               updated = true;
+            
+              const aligned = [msg.sender, msg.recipient].map((p, i) => ({
+                email: p,
+                name: [msg.senderName, msg.receiverName][i]
+              })).sort((a, b) => a.email.localeCompare(b.email));
+            
               return {
                 ...chat,
                 lastMsg: msg.text,
                 time: msg.timestamp,
-                participantNames: chat.participants?.length === 2 &&
-                  chat.participants.includes(msg.sender) &&
-                  chat.participants.includes(msg.recipient)
-                  ? [chat.participants[0] === msg.sender ? msg.senderName : msg.receiverName,
-                  chat.participants[1] === msg.sender ? msg.senderName : msg.receiverName]
-                  : [msg.senderName, msg.receiverName]
-
+                participants: aligned.map(p => p.email),
+                participantNames: aligned.map(p => p.name)
               };
             }
+            
             return chat;
           });
-
           if (!updated) {
-            const participants = [msg.sender, msg.recipient].sort();
-const participantNames = participants.map(p =>
-  p === msg.sender ? msg.senderName : msg.receiverName
-);
+            const participants = [msg.sender, msg.recipient];
+            const participantNames = [msg.senderName, msg.receiverName];
+          
+            const sorted = participants.map((p, i) => ({ email: p, name: participantNames[i] }))
+                                       .sort((a, b) => a.email.localeCompare(b.email));
+          
+            const normalizedParticipants = sorted.map(p => p.email);
+            const normalizedNames = sorted.map(p => p.name);
+          
+            const displayEmail = normalizedParticipants.sort().join('|'); // consistent chatId format
 
-updatedChats.unshift({
-  email: chatPartner,
-  lastMsg: msg.text,
-  time: msg.timestamp,
-  participants,
-  participantNames
+            console.log("🧾 Normalized Chat Insert:", {
+              displayEmail,
+              participants: normalizedParticipants,
+              participantNames: normalizedNames
             });
+            
+            updatedChats.unshift({
+              email: displayEmail,
+              lastMsg: msg.text,
+              time: msg.timestamp,
+              participants: normalizedParticipants,
+              participantNames: normalizedNames
+            });
+            
           }
+          
 
           return updatedChats;
         });
@@ -303,7 +341,7 @@ updatedChats.unshift({
 
     // 🔧 Ensure chat exists in DB
     try {
-      const chatId = [user, email].sort().join('|');
+      const chatId = email; // ✅ it's already in correct format
       const res = await fetch(`${BACKEND_URL}/api/chat/messages/${chatId}`);
       if (res.status === 404) {
         console.log("📦 Chat doesn't exist yet, creating with empty message to initialize");
@@ -400,23 +438,29 @@ updatedChats.unshift({
                 participants = [],
                 participantNames = []
               } = chat;
-
-
               let otherName = 'Unknown';
 
+              const lowerUser = user?.toLowerCase();
+
               if (participants.length === 2 && participantNames.length === 2) {
-                // match current user email to the participant and pick the other one's name
-                for (let i = 0; i < participants.length; i++) {
-                  if (participants[i].toLowerCase() !== user.toLowerCase()) {
-                    otherName = participantNames[i];
-                    break;
-                  }
+                const otherIndex = participants.findIndex(p => p.toLowerCase() !== lowerUser);
+                if (otherIndex !== -1) {
+                  otherName = participantNames[otherIndex];
                 }
               } else if (participantNames.length === 1) {
                 otherName = participantNames[0];
               } else if (email !== 'ALL') {
                 otherName = email.split('@')[0];
               }
+              
+              console.log("✅ Final Display Pick:", {
+                user,
+                participants,
+                participantNames,
+                otherName
+              });
+              
+
 
               return (
                 <div
