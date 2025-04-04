@@ -33,21 +33,20 @@ router.get("/chats/:user", async (req, res) => {
         }
 
         // Fix participant name alignment
-        const sorted = chat.participants.map((p, i) => ({
-          email: p,
-          name: participantNames[i]
-        })).sort((a, b) => a.email.localeCompare(b.email));
-        
+const participantNameMap = {};
+chat.participants.forEach((p, i) => {
+  participantNameMap[p] = participantNames[i];
+});
+
 return {
   chatId: chat.chatId,
-  email: chat.chatId, // ✅ FIXED
+  email: otherParticipant,
   lastMsg: chat.lastMessage || "",
   time: chat.updatedAt ? new Date(chat.updatedAt).toLocaleTimeString() : "",
-  participants: sorted.map(z => z.email),
-  participantNames: sorted.map(z => z.name),
+  participants: chat.participants || [],
+  participantNames: chat.participants.map(p => participantNameMap[p]),
   unreadCount: chat.unreadCounts?.[user] || 0
 };
-
 
       })
     );
