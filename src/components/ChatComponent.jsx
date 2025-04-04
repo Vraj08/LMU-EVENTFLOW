@@ -15,7 +15,7 @@ export default function ChatComponent({ user, department, defaultDepartment }) {
   const manuallyOpenedChat = useRef(false);
   const departmentMapping = {
     'parking@lmu.edu': 'vpatel16@lion.lmu.edu',
-    'facilities-management@lmu.edu': 'vpatel16@lion.lmu.edu',
+    'facilities-management@lmu.edu': 'aprabha1@lion.lmu.edu',
     'sodexo@lmu.edu': 'vpatel16@lion.lmu.edu',
     'its@lmu.edu': 'dpatel52@lion.lmu.edu'
   };
