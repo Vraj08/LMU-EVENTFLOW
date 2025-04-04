@@ -38,16 +38,9 @@ chat.participants.forEach((p, i) => {
   participantNameMap[p] = participantNames[i];
 });
 
-const zipped = chat.participants.map((p, i) => ({
-  email: p,
-  name: participantNameMap[p]
-}));
-
-const sorted = zipped.sort((a, b) => a.email.localeCompare(b.email));
-
 return {
   chatId: chat.chatId,
-  email: otherParticipant,
+  email: chat.chatId, // ✅ FIXED
   lastMsg: chat.lastMessage || "",
   time: chat.updatedAt ? new Date(chat.updatedAt).toLocaleTimeString() : "",
   participants: sorted.map(z => z.email),
