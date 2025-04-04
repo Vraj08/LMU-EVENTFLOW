@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const Student = require("../models/Student.js");
-router.use((req, res, next) => {
-  console.log(`🔥 Incoming to auth.js: ${req.method} ${req.originalUrl}`);
-  next();
-});
 router.get("/debug", (req, res) => {
-  res.json({ status: "✅ auth.js mounted" });
+  console.log("🔥 /api/debug hit");
+  res.json({ status: "✅ auth.js is mounted" });
+});
+router.use((req, res, next) => {
+  console.log(`📦 Incoming ${req.method} → ${req.originalUrl}`);
+  next();
 });
 
 

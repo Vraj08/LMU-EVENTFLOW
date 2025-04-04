@@ -8,42 +8,47 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ✅ Import Routes
-const authRoutes = require("./routes/auth");     // handles /api/login and /api/signup
-const eventRoutes = require("./routes/events");  // handles /api/events
-const rsvpRoutes = require("./routes/rsvps");    // handles /api/rsvps
-const chatRoutes = require("./routes/chat");     // handles /api/chat
+// ✅ Route Imports
+const authRoutes = require("./routes/auth");
+const eventRoutes = require("./routes/events");
+const rsvpRoutes = require("./routes/rsvps");
+const chatRoutes = require("./routes/chat");
 
-// ✅ Mount Routes
-app.use("/api", authRoutes);         // handles /api/login, /api/signup
+// ✅ Route Mounting Logs
+console.log("✅ Mounting /api (authRoutes)");
+app.use("/api", authRoutes);
+
+console.log("✅ Mounting /api/events (eventRoutes)");
 app.use("/api/events", eventRoutes);
+
 app.use("/api/rsvps", rsvpRoutes);
 app.use("/api/chat", chatRoutes);
 
-// ✅ Optional test route for health check
+// ✅ Root Debug Route
+app.get("/", (req, res) => {
+  res.send("🎉 Backend is running. Root is alive.");
+});
+
+// ✅ Health Check
 app.get("/api/test", (req, res) => {
-  res.json({ message: "✅ Backend is working!" });
+  res.json({ message: "✅ Backend test route is working!" });
 });
 
-// ✅ MongoDB + WebSocket Setup
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => {
-  console.log("✅ MongoDB connected");
+// ✅ MongoDB + WebSocket
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB connected");
 
-  const server = http.createServer(app);
+    const server = http.createServer(app);
+    const initWebSocket = require("./websocket");
+    initWebSocket(server);
 
-  // Start WebSocket server
-  const initWebSocket = require("./websocket");
-  initWebSocket(server);
-
-  const PORT = process.env.PORT || 5000;
-  server.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
+    const PORT = process.env.PORT || 5000;
+    server.listen(PORT, () => {
+      console.log(`🚀 Server running at http://localhost:${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err);
   });
-})
-.catch(err => {
-  console.error("❌ MongoDB connection error:", err);
-});
