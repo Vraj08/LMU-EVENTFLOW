@@ -20,6 +20,8 @@ app.use("/api", authRoutes);
 
 console.log("✅ Mounting /api/events (eventRoutes)");
 app.use("/api/events", eventRoutes);
+const classroomRoutes = require("./routes/classroom");
+app.use("/api/classroom", classroomRoutes);
 
 app.use("/api/rsvps", rsvpRoutes);
 app.use("/api/chat", chatRoutes);

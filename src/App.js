@@ -23,6 +23,7 @@ import UpcomingEventsLayout from "./components/UpcomingEventsLayout";
 import ChatPage from "./pages/GenericChatPage";
 import GenericChatPage from "./pages/GenericChatPage"; // make sure this path is correct
 
+import GenericClassroomBookings from "./components/GenericClassroomBookings";
 
 function App() {
   return (
@@ -33,6 +34,18 @@ function App() {
         <Route path="/student-dashboard" element={<StudentDashboard />} />
         <Route path="/faculty-dashboard" element={<FacultyDashboard />} />
         <Route path="/sodexo-dashboard/messages" element={<ChatPage />} />
+        <Route path="/sodexo-dashboard/book-classroom" element={<GenericClassroomBookings role="Sodexo" />} />
+        <Route path="/its-dashboard/book-classroom" element={<GenericClassroomBookings role="ITS" />} />
+        <Route path="/parking-dashboard/book-classroom" element={<GenericClassroomBookings role="Parking" />} />
+        <Route path="/event-organization-dashboard/book-classroom" element={<GenericClassroomBookings role="Event Organization" />} />
+        <Route path="/facilities-management-dashboard/book-classroom" element={<GenericClassroomBookings role="Facilities Management" />} />
+        <Route path="/campus-graphics-dashboard/book-classroom" element={<GenericClassroomBookings role="Campus Graphics" />} />
+        <Route path="/campus-safety-dashboard/book-classroom" element={<GenericClassroomBookings role="Campus Safety" />} />
+        <Route path="/marketing-dashboard/book-classroom" element={<GenericClassroomBookings role="Marketing" />} />
+        <Route path="/faculty-dashboard/book-classroom" element={<GenericClassroomBookings role="Faculty" />} />
+        <Route path="/generic-dashboard/book-classroom" element={<GenericClassroomBookings role="Generic" />} />
+
+
         <Route path="/its-dashboard/messages" element={<ChatPage />} />
         <Route path="/parking-dashboard/messages" element={<ChatPage />} />
         <Route path="/facilities-management-dashboard/messages" element={<ChatPage />} />

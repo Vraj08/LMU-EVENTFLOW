@@ -1,10 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./src/**/*.{js,jsx}"],
-
-
   theme: {
     extend: {
+      colors: {
+        primary: "#000000",
+        "primary-foreground": "#ffffff",
+        accent: "#f3f4f6",
+        "accent-foreground": "#1f2937",
+        "muted-foreground": "#6b7280",
+      },
       animation: {
         'fade-in-out': 'fadeInOut 3s ease-in-out forwards',
       },
@@ -16,6 +21,5 @@ module.exports = {
       },
     },
   },
-
   plugins: [],
-};
+}
