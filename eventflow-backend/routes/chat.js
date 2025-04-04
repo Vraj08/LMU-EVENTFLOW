@@ -33,20 +33,20 @@ router.get("/chats/:user", async (req, res) => {
         }
 
         // Fix participant name alignment
-const participantNameMap = {};
-chat.participants.forEach((p, i) => {
-  participantNameMap[p] = participantNames[i];
-});
+        const participantNameMap = {};
+        chat.participants.forEach((p, i) => {
+          participantNameMap[p] = participantNames[i];
+        });
 
-return {
-  chatId: chat.chatId,
-  email: otherParticipant,
-  lastMsg: chat.lastMessage || "",
-  time: chat.updatedAt ? new Date(chat.updatedAt).toLocaleTimeString() : "",
-  participants: chat.participants || [],
-  participantNames: chat.participants.map(p => participantNameMap[p]),
-  unreadCount: chat.unreadCounts?.[user] || 0
-};
+        return {
+          chatId: chat.chatId,
+          email: otherParticipant,
+          lastMsg: chat.lastMessage || "",
+          time: chat.updatedAt ? new Date(chat.updatedAt).toLocaleTimeString() : "",
+          participants: chat.participants || [],
+          participantNames: chat.participants.map(p => participantNameMap[p]),
+          unreadCount: chat.unreadCounts?.[user] || 0
+        };
 
       })
     );
@@ -80,7 +80,7 @@ router.post("/send", async (req, res) => {
     if (sender === recipient) {
       return res.status(400).json({ error: "Sender and recipient cannot be the same" });
     }
-    
+
     const newMessage = new Message({
       chatId: normalizedChatId,
       sender,
@@ -96,30 +96,36 @@ router.post("/send", async (req, res) => {
     // 🔴 WebSocket broadcast after saving to DB
     const wss = getWSS();
     if (wss) {
-    
-  const broadcastMessage = {
-    type: "chat",
-    chatId: normalizedChatId,
-    sender,
-    senderName,
-    recipient,
-    receiverName,
-    department,
-    text,
-    timestamp: new Date().toISOString(),
-    clientId: Math.random().toString(36).slice(2)
-  };
 
-  wss.clients.forEach(client => {
-    if (client.readyState === 1) {
-      client.send(JSON.stringify(broadcastMessage));
+      const broadcastMessage = {
+        type: "chat",
+        chatId: normalizedChatId,
+        sender,
+        senderName,
+        recipient,
+        receiverName,
+        department,
+        text,
+        timestamp: new Date().toISOString(),
+        clientId: Math.random().toString(36).slice(2)
+      };
+
+      wss.clients.forEach(client => {
+        if (client.readyState === 1) {
+          client.send(JSON.stringify(broadcastMessage));
+        }
+      });
     }
-  });
-}
 
 
     let chat = await Chat.findOne({ chatId: normalizedChatId });
     if (!chat) {
+      const nameMap = {
+        [sender]: senderName,
+        [recipient]: receiverName,
+      };
+      
+      const sortedNames = participantsSorted.map(email => nameMap[email]);
       chat = new Chat({
         chatId: normalizedChatId,
         participants: participantsSorted,
