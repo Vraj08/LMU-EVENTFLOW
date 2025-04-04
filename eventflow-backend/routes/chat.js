@@ -38,15 +38,23 @@ chat.participants.forEach((p, i) => {
   participantNameMap[p] = participantNames[i];
 });
 
+const zipped = chat.participants.map((p, i) => ({
+  email: p,
+  name: participantNameMap[p]
+}));
+
+const sorted = zipped.sort((a, b) => a.email.localeCompare(b.email));
+
 return {
   chatId: chat.chatId,
   email: otherParticipant,
   lastMsg: chat.lastMessage || "",
   time: chat.updatedAt ? new Date(chat.updatedAt).toLocaleTimeString() : "",
-  participants: chat.participants || [],
-  participantNames: chat.participants.map(p => participantNameMap[p]),
+  participants: sorted.map(z => z.email),
+  participantNames: sorted.map(z => z.name),
   unreadCount: chat.unreadCounts?.[user] || 0
 };
+
 
       })
     );
