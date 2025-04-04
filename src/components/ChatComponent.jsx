@@ -35,7 +35,15 @@ export default function ChatComponent({ user, department, defaultDepartment }) {
     const fetchChats = async () => {
       try {
         const res = await fetch(`${BACKEND_URL}/api/chat/chats/${user}`);
-        const backendChats = await res.json();
+if (!res.ok) {
+  const errorText = await res.text();
+  console.error("❌ Fetch /chats failed:", res.status, errorText);
+  return;
+}
+
+const backendChats = await res.json();
+console.log("✅ Chats fetched:", backendChats);
+
 
         let deptEmail = null;
         if (defaultDepartment) {

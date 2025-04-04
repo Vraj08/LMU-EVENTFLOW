@@ -23,37 +23,58 @@ router.get("/chats/:user", async (req, res) => {
 
     const enrichedChats = await Promise.all(
       chats.map(async (chat) => {
+        // ⚠️ Safety checks
+        if (!chat?.participants || !Array.isArray(chat.participants)) {
+          console.warn("⚠️ Skipping chat with invalid or missing participants:", chat?.chatId);
+          return null;
+        }
+    
+        if (!chat.participants.includes(user)) {
+          console.warn("⚠️ Skipping chat because user is not a participant:", user, chat.chatId);
+          return null;
+        }
+    
         const otherParticipant = chat.participants.find(p => p !== user);
-
+        if (!otherParticipant) {
+          console.warn("⚠️ Could not determine other participant:", chat.chatId);
+          return null;
+        }
+    
         let participantNames = chat.participantNames;
         if (!participantNames || participantNames.length !== chat.participants.length) {
           participantNames = await Promise.all(
             chat.participants.map(email => getFullName(email))
           );
         }
-
-        // Fix participant name alignment
-const participantNameMap = {};
-chat.participants.forEach((p, i) => {
-  participantNameMap[p] = participantNames[i];
-});
-
-return {
-  chatId: chat.chatId,
-  email: otherParticipant,
-  lastMsg: chat.lastMessage || "",
-  time: chat.updatedAt ? new Date(chat.updatedAt).toLocaleTimeString() : "",
-  participants: chat.participants || [],
-  participantNames: chat.participants.map(email => {
-    if (email === user) return 'You';
-    return participantNameMap[email];
-  }),
-  
-  unreadCount: chat.unreadCounts?.[user] || 0
-};
-
+    
+        // 🔧 Ensure correct mapping of names to participants
+        const participantNameMap = {};
+        chat.participants.forEach((p, i) => {
+          participantNameMap[p] = participantNames[i];
+        });
+    
+        return {
+          chatId: chat.chatId,
+          email: otherParticipant,
+          lastMsg: chat.lastMessage || "",
+          time: chat.updatedAt ? new Date(chat.updatedAt).toLocaleTimeString() : "",
+          participants: chat.participants || [],
+          participantNames: chat.participants.map(email => {
+            if (email === user) return 'You';
+            return participantNameMap[email];
+          }),
+          unreadCount: chat.unreadCounts?.[user] || 0
+        };
       })
     );
+    
+    // ✅ Filter out any `null` results (chats we skipped)
+    const filteredChats = enrichedChats.filter(Boolean);
+    
+    // ✅ Sort and send
+    filteredChats.sort((a, b) => b.unreadCount - a.unreadCount);
+    res.json(filteredChats);
+    
 
     enrichedChats.sort((a, b) => b.unreadCount - a.unreadCount);
     res.json(enrichedChats);
