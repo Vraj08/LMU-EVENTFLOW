@@ -13,9 +13,9 @@ app.use("/api", require("./routes/auth"));
 app.use("/api/events", require("./routes/events"));
 app.use("/api/rsvps", require("./routes/rsvps"));
 app.use("/api/chat", require("./routes/chat")); // ✅ your /chat API
-app.use("/api/login", loginRoutes);
+
 app.use("/api/signup", signupRoutes);
-app.use("/api/chat", chatRoutes);
+
 app.use("/api/events", eventRoutes);
 
 // MongoDB connect
