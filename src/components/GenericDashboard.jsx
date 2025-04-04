@@ -65,7 +65,7 @@ function GenericDashboard({ basePath = "/generic", roleName = "User" }) {
     const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
 
     try {
-      const response = await fetch('${process.env.REACT_APP_BACKEND_URL}/api/update-profile', {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/update-profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
