@@ -8,17 +8,24 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use("/api", require("./routes/auth"));
-app.use("/api/events", require("./routes/events"));
-app.use("/api/rsvps", require("./routes/rsvps"));
-app.use("/api/chat", require("./routes/chat")); // ✅ your /chat API
+// ✅ Import Routes
+const authRoutes = require("./routes/auth");     // handles /api/login and /api/signup
+const eventRoutes = require("./routes/events");  // handles /api/events
+const rsvpRoutes = require("./routes/rsvps");    // handles /api/rsvps
+const chatRoutes = require("./routes/chat");     // handles /api/chat
 
-app.use("/api/signup", signupRoutes);
-
+// ✅ Mount Routes
+app.use("/api", authRoutes);         // handles /api/login, /api/signup
 app.use("/api/events", eventRoutes);
+app.use("/api/rsvps", rsvpRoutes);
+app.use("/api/chat", chatRoutes);
 
-// MongoDB connect
+// ✅ Optional test route for health check
+app.get("/api/test", (req, res) => {
+  res.json({ message: "✅ Backend is working!" });
+});
+
+// ✅ MongoDB + WebSocket Setup
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -28,9 +35,9 @@ mongoose.connect(process.env.MONGO_URI, {
 
   const server = http.createServer(app);
 
-  // ✅ Start WebSocket server on same HTTP server
+  // Start WebSocket server
   const initWebSocket = require("./websocket");
-initWebSocket(server);
+  initWebSocket(server);
 
   const PORT = process.env.PORT || 5000;
   server.listen(PORT, () => {
