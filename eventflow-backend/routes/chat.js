@@ -117,19 +117,19 @@ router.post("/send", async (req, res) => {
       });
     }
 
-
     let chat = await Chat.findOne({ chatId: normalizedChatId });
     if (!chat) {
       const nameMap = {
         [sender]: senderName,
         [recipient]: receiverName,
       };
-      
-      const sortedNames = participantsSorted.map(email => nameMap[email]);
+    
+      const participantNamesSorted = participantsSorted.map(email => nameMap[email]);
+    
       chat = new Chat({
         chatId: normalizedChatId,
         participants: participantsSorted,
-        participantNames: participantsSorted.map(email => nameMap[email]),
+        participantNames: participantNamesSorted,
         unreadCounts: { [recipient]: 1 },
         lastMessage: text,
         updatedAt: new Date(),
@@ -140,8 +140,9 @@ router.post("/send", async (req, res) => {
       chat.updatedAt = new Date();
       chat.lastUpdated = new Date();
       chat.unreadCounts[recipient] = (chat.unreadCounts[recipient] || 0) + 1;
-      chat.markModified("unreadCounts"); // 🔥 This line is crucial
+      chat.markModified("unreadCounts");
     }
+    
 
     await chat.save();
     console.log("✅ Chat updated:", {
