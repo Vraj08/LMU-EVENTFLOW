@@ -190,7 +190,7 @@ useEffect(() => {
   const handleProfileUpdate = async () => {
     try {
       const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
-      const response = await fetch("${process.env.REACT_APP_BACKEND_URL}/api/update-profile", {
+      const response = await fetch('${process.env.REACT_APP_BACKEND_URL}/api/update-profile', {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -235,7 +235,7 @@ useEffect(() => {
       // Save the event to the backend
       const user = JSON.parse(localStorage.getItem("eventflowUser")); // get current user
 
-      await axios.post("${process.env.REACT_APP_BACKEND_URL}/api/events", {
+      await axios.post('${process.env.REACT_APP_BACKEND_URL}/api/events', {
         ...form,
         isActive: true,
         isApproved: false,

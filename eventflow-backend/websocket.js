@@ -41,7 +41,7 @@ function initializeWebSocket(server) {
           };
 
           // Forward to REST to persist in DB
-          await axios.post("${process.env.REACT_APP_BACKEND_URL}/api/chat/send", enrichedMsg);
+          await axios.post('${process.env.REACT_APP_BACKEND_URL}/api/chat/send', enrichedMsg);
 
           wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
