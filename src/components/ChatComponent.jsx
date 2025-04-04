@@ -219,10 +219,14 @@ export default function ChatComponent({ user, department, defaultDepartment }) {
 
           if (!updated) {
             const participants = [msg.sender, msg.recipient].sort();
-const participantNames = participants.map(p =>
-  p === msg.sender ? msg.senderName : msg.receiverName
-);
+            const participantNames = participants.map(p => {
+              if (p === msg.sender) return msg.senderName || p;
+              if (p === msg.recipient) return msg.receiverName || p;
+              console.log("⚠️ participantNames computed:", participantNames, "sender:", msg.senderName, "receiver:", msg.receiverName);
 
+              return p;
+            });
+            
 updatedChats.unshift({
   email: chatPartner,
   lastMsg: msg.text,
