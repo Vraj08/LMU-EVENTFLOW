@@ -129,7 +129,7 @@ router.post("/send", async (req, res) => {
       chat = new Chat({
         chatId: normalizedChatId,
         participants: participantsSorted,
-        participantNames: [senderName, receiverName],
+        participantNames: participantsSorted.map(email => nameMap[email]),
         unreadCounts: { [recipient]: 1 },
         lastMessage: text,
         updatedAt: new Date(),
