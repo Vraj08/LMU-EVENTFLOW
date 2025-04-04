@@ -10,7 +10,7 @@ export default function ChatComponent({ user, department, defaultDepartment }) {
   const [typingIndicators, setTypingIndicators] = useState({});
   const [activeChat, setActiveChat] = useState(null);
   const [unreadCounts, setUnreadCounts] = useState({});
-  
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const manuallyOpenedChat = useRef(false);
   const departmentMapping = {
@@ -63,6 +63,14 @@ export default function ChatComponent({ user, department, defaultDepartment }) {
           if (!chat.lastMsg) chat.lastMsg = 'No messages yet';
           if (!chat.time) chat.time = '';
         });
+        uniqueChats.forEach(chat => {
+          if (!chat.participantNames || chat.participantNames.length !== (chat.participants?.length || 0)) {
+            chat.participantNames = chat.participants.map(p =>
+              p === user ? 'You' : p.split('@')[0]
+            );
+          }
+        });
+        
 
         // ✅ Patch unread counts from backend
         const unreadMap = {};
@@ -226,13 +234,13 @@ export default function ChatComponent({ user, department, defaultDepartment }) {
 
               return p;
             });
-            
-updatedChats.unshift({
-  email: chatPartner,
-  lastMsg: msg.text,
-  time: msg.timestamp,
-  participants,
-  participantNames
+
+            updatedChats.unshift({
+              email: chatPartner,
+              lastMsg: msg.text,
+              time: msg.timestamp,
+              participants,
+              participantNames
             });
           }
 

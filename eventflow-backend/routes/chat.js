@@ -44,7 +44,11 @@ return {
   lastMsg: chat.lastMessage || "",
   time: chat.updatedAt ? new Date(chat.updatedAt).toLocaleTimeString() : "",
   participants: chat.participants || [],
-  participantNames: chat.participants.map(p => participantNameMap[p]),
+  participantNames: chat.participants.map(email => {
+    if (email === user) return 'You';
+    return participantNameMap[email];
+  }),
+  
   unreadCount: chat.unreadCounts?.[user] || 0
 };
 
