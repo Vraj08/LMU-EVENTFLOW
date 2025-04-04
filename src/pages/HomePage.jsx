@@ -149,7 +149,7 @@ export default function HomePage() {
     toast.success("Email verified! Checking access...", toastSuccessStyle);
   
     try {
-      const response = await fetch("${process.env.REACT_APP_BACKEND_URL}/api/login", {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email })  // Only send email initially
