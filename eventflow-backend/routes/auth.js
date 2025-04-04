@@ -4,6 +4,12 @@ const Student = require("../models/Student.js");
 
 // POST /api/login
 router.post("/login", async (req, res) => {
+  router.post("/login", async (req, res) => {
+    console.log("🔥 /api/login HIT"); // <-- add this line
+    const { email, firstName, lastName } = req.body;
+    ...
+  });
+  
   const { email, firstName, lastName } = req.body;
 
   try {
