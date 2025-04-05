@@ -1,6 +1,37 @@
 const express = require("express");
 const router = express.Router();
 const Event = require("../models/Event");
+// ✅ PLACE THIS NEAR THE TOP
+router.get("/pending", async (req, res) => {
+  try {
+    const events = await Event.find({ isActive: true, isApproved: false });
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch pending events." });
+  }
+});
+// ✅ APPROVE an event
+router.put("/approve/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const updatedEvent = await Event.findByIdAndUpdate(
+      id,
+      { isApproved: true },
+      { new: true }
+    );
+
+    if (!updatedEvent) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+
+    res.status(200).json({ message: "Event approved successfully", event: updatedEvent });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to approve event" });
+  }
+});
+
 
 // ✅ GET all approved & active events
 router.get("/all", async (req, res) => {
@@ -87,6 +118,7 @@ router.post("/", async (req, res) => {
   }
 });
 
+
 // ✅ UPDATE an event by its MongoDB _id (preserve eventId + check for no changes)
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
@@ -114,6 +146,8 @@ router.put("/:id", async (req, res) => {
     event.description = description;
     event.date = date;
     event.time = time;
+    event.isApproved = false; // <-- reset approval on any edit
+    
 
     await event.save();
 

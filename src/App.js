@@ -1,10 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ApproveEvents from "./components/ApproveEvents";
+
 
 import HomePage from "./pages/HomePage";
 import StudentDashboard from "./pages/StudentDashboard";
 import FacultyDashboard from "./pages/FacultyDashboard";
-
+import AdminDashboard from "./components/AdminDashboard";
 import GenericDashboard from "./components/GenericDashboard";
 import GenericManageEvents from "./components/GenericManageEvents";
 import GenericEditEvent from "./components/GenericEditEvent"; // ✅ ADD THIS
@@ -22,7 +24,7 @@ import GenericCreateEvent from "./components/GenericCreateEvent";
 import UpcomingEventsLayout from "./components/UpcomingEventsLayout";
 import ChatPage from "./pages/GenericChatPage";
 import GenericChatPage from "./pages/GenericChatPage"; // make sure this path is correct
-
+import ChangeUserRolePage from"./components/ChangeUserRolePage";
 import GenericClassroomBookings from "./components/GenericClassroomBookings";
 
 function App() {
@@ -32,6 +34,9 @@ function App() {
         {/* Existing Routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />
+        <Route path="/admin-dashboard/approve-events" element={<ApproveEvents role="Admin" />} />
+        <Route path="/admin-dashboard/change-roles" element={<ChangeUserRolePage  />} />{/*role="Admin"*/}
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/faculty-dashboard" element={<FacultyDashboard />} />
         <Route path="/sodexo-dashboard/messages" element={<ChatPage />} />
         <Route path="/sodexo-dashboard/book-classroom" element={<GenericClassroomBookings role="Sodexo" />} />
@@ -45,6 +50,13 @@ function App() {
         <Route path="/faculty-dashboard/book-classroom" element={<GenericClassroomBookings role="Faculty" />} />
         <Route path="/generic-dashboard/book-classroom" element={<GenericClassroomBookings role="Generic" />} />
 
+        <Route path="/admin-dashboard/create-event" element={<GenericCreateEvent role="Admin" />} />
+        <Route path="/admin-dashboard/manage-events" element={<GenericManageEvents role="Admin" />} />
+        <Route path="/admin-dashboard/manage-events/edit-event/:id" element={<GenericEditEvent role="Admin" />} />
+        <Route path="/admin-dashboard/request-items" element={<GenericRequestItems role="Admin" />} />
+        <Route path="/admin-dashboard/book-classroom" element={<GenericClassroomBookings role="Admin" />} />
+        <Route path="/admin-dashboard/messages" element={<ChatPage />} />
+        <Route path="/admin/upcoming-events" element={<UpcomingEventsLayout role="Admin" />} />
 
         <Route path="/its-dashboard/messages" element={<ChatPage />} />
         <Route path="/parking-dashboard/messages" element={<ChatPage />} />

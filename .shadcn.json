@@ -1,0 +1,17 @@
+{
+    "project": "eventflow-ui",
+    "style": "default",
+    "tailwind": {
+      "config": "tailwind.config.js",
+      "css": "src/index.css",
+      "baseColor": "zinc",
+      "cssVariables": true
+    },
+    "aliases": {
+      "components": "@/components",
+      "utils": "@/lib/utils"
+    },
+    "componentDir": "src/components",
+    "tsx": true
+  }
+  

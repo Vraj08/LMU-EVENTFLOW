@@ -18,8 +18,7 @@ import { useState, useEffect } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { format, addDays } from "date-fns";
 import { motion } from "framer-motion";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import Calendar from "./ui/calendar";
 
 const timeSlots = Array.from({ length: 9 }, (_, i) => {
   const hour = 6 + i * 2;
@@ -142,6 +141,7 @@ export default function ClassroomBookingPage({ role = "User" }) {
     "Campus Safety": "/campus-safety-dashboard",
     Marketing: "/marketing-dashboard",
     Faculty: "/faculty-dashboard",
+    Admin:"/admin-dashboard"
   };
   const [selectedBuilding, setSelectedBuilding] = useState(
     Object.keys(buildings)[0]
@@ -266,22 +266,7 @@ export default function ClassroomBookingPage({ role = "User" }) {
             </Select>
 
             {/* Date Picker (Popover calendar) */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button className="w-full sm:w-72 justify-start text-left font-normal bg-gradient-to-br from-[#dfe9f3] via-[#f8f9fa] to-[#e2f0fb] text-gray-900 rounded-xl shadow-md border border-blue-100">
-                  📅 {format(selectedDate, 'PPP')}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-2 rounded-xl shadow-md border border-blue-100 bg-gradient-to-br from-[#dfe9f3] via-[#f8f9fa] to-[#e2f0fb]">
-                <DatePicker
-                  selected={selectedDate}
-                  onChange={(date) => setSelectedDate(date)}
-                  minDate={new Date()}
-                  className="w-full sm:w-72 px-4 py-2 bg-gradient-to-br from-[#dfe9f3] via-[#f8f9fa] to-[#e2f0fb] text-gray-900 rounded-xl shadow-md border border-blue-100"
-                />
-
-              </PopoverContent>
-            </Popover>
+            <Calendar selected={selectedDate} onSelect={setSelectedDate} />
 
           </div>
 
@@ -326,7 +311,7 @@ export default function ClassroomBookingPage({ role = "User" }) {
                             date: format(selectedDate, "yyyy-MM-dd"),
                             timeSlot: slot,
                           });
-                          toast.success("✅ Booking confirmed!");
+                          toast.success(" Booking confirmed!");
                           setBookings((prev) => [
                             ...prev,
                             {

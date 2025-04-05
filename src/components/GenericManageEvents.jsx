@@ -29,6 +29,7 @@ export default function GenericManageEvents({ role = "User" }) {
         "Campus Safety": "/campus-safety-dashboard",
         Marketing: "/marketing-dashboard",
         Faculty: "/faculty-dashboard",
+        Admin:"/admin-dashboard"
     };
 
 
@@ -87,7 +88,7 @@ export default function GenericManageEvents({ role = "User" }) {
             const user = JSON.parse(localStorage.getItem("eventflowUser"));
             const encodedEmail = encodeURIComponent(user.email);
             const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events/user/${encodedEmail}`);
-            setEvents(res.data.filter(e => e.isActive));
+            setEvents(res.data.filter(e => e.isApproved));
         } catch {
             toast.error("Failed to fetch events.");
         }
@@ -152,7 +153,7 @@ export default function GenericManageEvents({ role = "User" }) {
                         You have not created any events.
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Once you create an event, it will appear here for you to manage.
+                    Only approved events appear here. Pending edits will show once re-approved.
                     </p>
                 </div>
             ) : (

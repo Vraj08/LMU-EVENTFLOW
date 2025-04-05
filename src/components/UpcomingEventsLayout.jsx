@@ -126,7 +126,8 @@ const UpcomingEventsLayout = ({ backPath = "/", role = "User" }) => {
       "Campus Graphics": "/campus-graphics-dashboard",
       "Campus Safety": "/campus-safety-dashboard",
       Marketing: "/marketing-dashboard",
-      Faculty: "/faculty-dashboard"
+      Faculty: "/faculty-dashboard",
+      Admin: "/admin-dashboard"
     };
 
     // If role exists, navigate to its dashboard, otherwise fallback to generic dashboard

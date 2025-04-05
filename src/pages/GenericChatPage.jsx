@@ -65,6 +65,7 @@ export default function GenericChatPage({ role: propRole }) {
     "Campus Safety": "/campus-safety-dashboard",
     Marketing: "/marketing-dashboard",
     Faculty: "/faculty-dashboard",
+    Admin:"/admin-dashboard"
   };
 
   const handleBackClick = () => {

@@ -51,6 +51,7 @@ export default function GenericEditEvent({ role = "User" }) {
     "Campus Safety": "/campus-safety-dashboard",
     Marketing: "/marketing-dashboard",
     Faculty: "/faculty-dashboard",
+    Admin:"/admin-dashboard"
 };
 
   const navigate = useNavigate();

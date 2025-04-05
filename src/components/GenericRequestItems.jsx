@@ -42,6 +42,7 @@ export default function GenericRequestItems({ role = "User" }) {
         "Campus Safety": "/campus-safety-dashboard",
         Marketing: "/marketing-dashboard",
         Faculty: "/faculty-dashboard",
+        Admin:"/admin-dashboard"
       };
       
     useEffect(() => {

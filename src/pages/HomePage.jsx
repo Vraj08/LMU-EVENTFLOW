@@ -48,6 +48,7 @@ export default function HomePage() {
   const [lastName, setLastName] = useState("");
   const dashboardRoutes = {
     faculty: "/faculty-dashboard",
+    Admin:"/admin-dashboard",
     student: "/student-dashboard",
     sodexo: "/sodexo-dashboard",
     its: "/its-dashboard",
