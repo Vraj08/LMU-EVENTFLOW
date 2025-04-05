@@ -43,23 +43,56 @@ const ChangeUserRolePage = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [showProfileModal, setShowProfileModal] = useState(false);
+    const [currentRoleMap, setCurrentRoleMap] = useState({});
 
     const cardRef = useRef(null);
     const lightRef = useRef(null);
     const lastEvent = useRef(null);
     const navigate = useNavigate();  // Initialize navigation
-
     useEffect(() => {
-        setEmails(["user1@example.com", "user2@example.com"]);
-        setRoles(["Admin", "Editor", "Viewer"]);
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/students`)
 
-        // Fetch user data from localStorage
+            .then(res => res.json())
+            .then(data => {
+                console.log("✅ Received from backend:", data); // DEBUG LOG
+                const emailList = data.map(user => user.email);
+                const roleMap = {};
+                data.forEach(user => {
+                    // Capitalize first letter of role (optional, match dropdown)
+                    const properRole = user.userType.charAt(0).toUpperCase() + user.userType.slice(1).toLowerCase();
+                    roleMap[user.email] = properRole;
+                });
+    
+                setEmails(emailList);
+                setCurrentRoleMap(roleMap);
+            })
+            .catch(err => {
+                console.error("❌ Error fetching students:", err);
+                toast.error("Failed to load student emails.");
+            });
+    
+        // Set predefined roles
+        setRoles([
+            "Sodexo",
+            "ITS",
+            "Parking",
+            "Event Organization",
+            "Facilities Management",
+            "Campus Graphics",
+            "Campus Safety",
+            "Marketing",
+            "Faculty",
+            "Student"
+        ]);
+    
+        // Load profile name from localStorage
         const user = JSON.parse(localStorage.getItem("eventflowUser"));
         if (user) {
             setFirstName(user.firstName);
             setLastName(user.lastName);
         }
     }, []);
+    
 
     useEffect(() => {
         if (darkMode) {
@@ -70,11 +103,11 @@ const ChangeUserRolePage = () => {
     }, [darkMode]);
 
     useEffect(() => {
-        if (selectedEmail) {
-            const simulatedCurrentRole = "Viewer";  // Simulate the current role fetch
-            setCurrentRole(simulatedCurrentRole);
+        if (selectedEmail && currentRoleMap[selectedEmail]) {
+            setCurrentRole(currentRoleMap[selectedEmail]);
         }
-    }, [selectedEmail]);
+    }, [selectedEmail, currentRoleMap]);
+    
 
     // Handle profile update
     const handleProfileUpdate = () => {
@@ -89,13 +122,30 @@ const ChangeUserRolePage = () => {
 
     // Handle changing role
     const handleChangeRole = () => {
-        console.log(`Changed ${selectedEmail} from ${currentRole} to ${selectedRole}`);
-        toast.success("Role Successfully Changed!", toastSuccessStyle);
-        confetti({ particleCount: 60, spread: 45, origin: { y: 0.6 } });
-        setTimeout(() => confetti({ particleCount: 90, spread: 70, origin: { y: 0.5 } }), 300);
-        setTimeout(() => confetti({ particleCount: 120, spread: 90, origin: { y: 0.4 } }), 600);
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/api/students/change-role`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: selectedEmail, newRole: selectedRole })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const updatedMap = { ...currentRoleMap, [selectedEmail]: selectedRole };
+                setCurrentRoleMap(updatedMap);
+    
+                toast.success("Role Successfully Changed!", toastSuccessStyle);
+                confetti({ particleCount: 60, spread: 45, origin: { y: 0.6 } });
+                setTimeout(() => confetti({ particleCount: 90, spread: 70, origin: { y: 0.5 } }), 300);
+                setTimeout(() => confetti({ particleCount: 120, spread: 90, origin: { y: 0.4 } }), 600);
+            } else {
+                toast.error("Failed to update role.");
+            }
+        })
+        .catch(() => toast.error("Error connecting to backend"));
+    
         setConfirmOpen(false);
     };
+    
 
     const processMouseMove = () => {
         if (!lastEvent.current || !interactive) return;

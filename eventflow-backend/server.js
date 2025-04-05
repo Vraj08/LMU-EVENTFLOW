@@ -7,6 +7,9 @@ require("dotenv").config();
 const app = express();
 app.use(cors());
 app.use(express.json());
+const studentRoutes = require("./routes/students");
+console.log("✅ Mounting /api/students (studentRoutes)");
+app.use("/api/students", studentRoutes);
 
 // ✅ Route Imports
 const authRoutes = require("./routes/auth");
