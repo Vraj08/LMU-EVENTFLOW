@@ -26,7 +26,7 @@ import ChatPage from "./pages/GenericChatPage";
 import GenericChatPage from "./pages/GenericChatPage"; // make sure this path is correct
 import ChangeUserRolePage from"./components/ChangeUserRolePage";
 import GenericClassroomBookings from "./components/GenericClassroomBookings";
-
+import Unauthorized3DPage from './pages/unathorized';
 function App() {
   return (
     <Router>
@@ -49,7 +49,7 @@ function App() {
         <Route path="/marketing-dashboard/book-classroom" element={<GenericClassroomBookings role="Marketing" />} />
         <Route path="/faculty-dashboard/book-classroom" element={<GenericClassroomBookings role="Faculty" />} />
         <Route path="/generic-dashboard/book-classroom" element={<GenericClassroomBookings role="Generic" />} />
-
+        <Route path="/unauthorized" element={<Unauthorized3DPage />} />
         <Route path="/admin-dashboard/create-event" element={<GenericCreateEvent role="Admin" />} />
         <Route path="/admin-dashboard/manage-events" element={<GenericManageEvents role="Admin" />} />
         <Route path="/admin-dashboard/manage-events/edit-event/:id" element={<GenericEditEvent role="Admin" />} />
