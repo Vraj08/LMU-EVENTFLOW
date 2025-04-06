@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-
 export default function Unauthorized3DPage() {
   const canvasRef = useRef(null);
   const mouse = useRef({ x: 0, y: 0 });
@@ -10,9 +9,7 @@ export default function Unauthorized3DPage() {
     { angle: Math.PI / 2, radius: 90, speed: 0.007, color: "#33ccff" },
     { angle: Math.PI, radius: 120, speed: 0.005, color: "#cc33ff" }
   ]);
-
   const theme = 'error';
-
   const allFunFacts = [
     "🔐 Over 30% of data breaches are due to unauthorized access.",
     "🛡️ Role-based access control is used in 85% of secure systems.",

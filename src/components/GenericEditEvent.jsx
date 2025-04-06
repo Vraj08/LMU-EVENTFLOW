@@ -129,7 +129,7 @@ export default function GenericEditEvent({ role = "User" }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("eventflowUser"));
+    const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       setFirstName(user.firstName);
       setLastName(user.lastName);
@@ -226,7 +226,7 @@ export default function GenericEditEvent({ role = "User" }) {
   };
   const handleProfileUpdate = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
+      const user = JSON.parse(localStorage.getItem("user")) || {};
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/update-profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -246,7 +246,7 @@ export default function GenericEditEvent({ role = "User" }) {
         lastName: updated.lastName,
       };
 
-      localStorage.setItem("eventflowUser", JSON.stringify(updatedUser));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
       setFirstName(updated.firstName);
       setLastName(updated.lastName);
       setShowProfileModal(false);
@@ -256,7 +256,7 @@ export default function GenericEditEvent({ role = "User" }) {
     }
   };
   const handleLogout = () => {
-    localStorage.removeItem("eventflowUser");
+    localStorage.removeItem("user");
     toast.success("👋 Logged out successfully!", toastSuccessStyle);
     setTimeout(() => navigate("/"), 1500);
   };

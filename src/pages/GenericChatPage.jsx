@@ -18,7 +18,7 @@ export default function GenericChatPage({ role: propRole }) {
   const [tempFirstName, setTempFirstName] = useState("");
   const [tempLastName, setTempLastName] = useState("");
 
-  const userObj = JSON.parse(localStorage.getItem("eventflowUser"));
+  const userObj = JSON.parse(localStorage.getItem("user"));
   const user = userObj?.email;
   const department = userObj?.department;
 
@@ -44,17 +44,12 @@ export default function GenericChatPage({ role: propRole }) {
   
 
   const rawRole = propRole || routeStateRole || derivedRole || "User";
-  const normalizedRole = rawRole
-    .toLowerCase()
-    .split(" ")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
-    console.log("🧠 propRole:", propRole);
-    console.log("📦 routeStateRole:", routeStateRole);
-    console.log("🔍 derivedRole (from dept):", derivedRole);
-    console.log("🧾 rawRole:", rawRole);
-    console.log("✅ normalizedRole:", normalizedRole);
-    
+  const normalizedRole = (propRole || userObj?.userType || "Generic")
+  .toLowerCase()
+  .split(" ")
+  .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+  .join(" ");
+
   const rolePaths = {
     Sodexo: "/sodexo-dashboard",
     Its: "/its-dashboard",
@@ -107,7 +102,7 @@ export default function GenericChatPage({ role: propRole }) {
         lastName: updated.lastName,
       };
 
-      localStorage.setItem("eventflowUser", JSON.stringify(updatedUser));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
       setFirstName(updated.firstName);
       setLastName(updated.lastName);
       setShowProfileModal(false);
@@ -147,7 +142,7 @@ export default function GenericChatPage({ role: propRole }) {
       </div>
 
       {/* ✅ ChatComponent with department pre-selected */}
-      <div className="w-full max-w-[1200px] mx-auto">
+      <div className="w-full max-w-[1200px] mx-auto pt-16 sm:pt-12">
         <ChatComponent
           user={user}
           department={department}

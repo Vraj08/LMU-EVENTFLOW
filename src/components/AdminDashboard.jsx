@@ -4,9 +4,8 @@ import { motion } from "framer-motion";
 import Tilt from 'react-parallax-tilt';
 import {
   CalendarDays, PlusSquare, Boxes, Sliders,
-  School, MessageCircle
+  School, MessageCircle, CheckCircle, UserCog
 } from "lucide-react";
-import { CheckCircle, UserCog } from "lucide-react";
 
 import toast, { Toaster } from "react-hot-toast";
 import DashboardTopbar from "./DashboardTopbar";
@@ -18,7 +17,7 @@ function AdminDashboard({ basePath = "/admin", roleName = "User" }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("eventflowUser"));
+    const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       setFirstName(user.firstName);
       setLastName(user.lastName);
@@ -56,14 +55,14 @@ function AdminDashboard({ basePath = "/admin", roleName = "User" }) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("eventflowUser");
+    localStorage.removeItem("user");
     toast.success("👋 Logged out successfully!", toastSuccessStyle);
     setTimeout(() => navigate("/"), 1500);
   };
 
   const handleProfileUpdate = async (newFirst, newLast) => {
     toast.remove();
-    const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
+    const user = JSON.parse(localStorage.getItem("user")) || {};
 
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/update-profile`, {
@@ -88,7 +87,7 @@ function AdminDashboard({ basePath = "/admin", roleName = "User" }) {
         lastName: data.lastName,
       };
 
-      localStorage.setItem("eventflowUser", JSON.stringify(updatedUser));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
       setFirstName(data.firstName);
       setLastName(data.lastName);
       return toast.success(" Profile updated successfully!", toastSuccessStyle);
@@ -138,20 +137,19 @@ function AdminDashboard({ basePath = "/admin", roleName = "User" }) {
       onClick: () => navigate(`${basePath}-dashboard/messages`)
     },
     {
-        title: "Approve Events",
-        description: "Review and approve pending event requests.",
-        icon: <CheckCircle className="w-8 h-8 text-purple-500 dark:text-blue-300" />,
-        onClick: () => navigate(`${basePath}-dashboard/approve-events`),
-      },
-      {
-        title: "Change User Roles",
-        description: "Manage permissions and user roles across the platform.",
-        icon: <UserCog className="w-8 h-8 text-purple-500 dark:text-blue-300" />,
-        onClick: () => navigate(`${basePath}-dashboard/change-roles`),
-      }    
-    
+      title: "Approve Events",
+      description: "Review and approve pending event requests.",
+      icon: <CheckCircle className="w-8 h-8 text-purple-500 dark:text-blue-300" />,
+      onClick: () => navigate(`${basePath}-dashboard/approve-events`),
+    },
+    {
+      title: "Change User Roles",
+      description: "Manage permissions and user roles across the platform.",
+      icon: <UserCog className="w-8 h-8 text-purple-500 dark:text-blue-300" />,
+      onClick: () => navigate(`${basePath}-dashboard/change-roles`),
+    }
   ];
-  
+
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
@@ -165,14 +163,16 @@ function AdminDashboard({ basePath = "/admin", roleName = "User" }) {
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
-        <DashboardTopbar
-          darkMode={darkMode}
-          setDarkMode={setDarkMode}
-          firstName={firstName}
-          lastName={lastName}
-          onLogout={handleLogout}
-          onProfileUpdate={handleProfileUpdate}
-        />
+        <div className="mb-16">
+          <DashboardTopbar
+            darkMode={darkMode}
+            setDarkMode={setDarkMode}
+            firstName={firstName}
+            lastName={lastName}
+            onLogout={handleLogout}
+            onProfileUpdate={handleProfileUpdate}
+          />
+        </div>
 
         <div className="text-center w-full mb-10">
           <motion.h1
@@ -200,8 +200,8 @@ function AdminDashboard({ basePath = "/admin", roleName = "User" }) {
                 <motion.div className="mb-4">{card.icon}</motion.div>
                 <h2 className="text-3xl font-bold mb-2 text-purple-700 dark:text-blue-300 drop-shadow">{card.title}</h2>
                 <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed">{card.description}</p>
-                <div className='absolute inset-0 rounded-3xl opacity-0 group-active:opacity-30 bg-blue-300/20 transition duration-300 pointer-events-none'></div>
-                <span className='absolute inset-0 rounded-3xl border border-blue-300 opacity-0 group-hover:opacity-100 animate-pulse transition duration-300 pointer-events-none'></span>
+                <div className="absolute inset-0 rounded-3xl opacity-0 group-active:opacity-30 bg-blue-300/20 transition duration-300 pointer-events-none"></div>
+                <span className="absolute inset-0 rounded-3xl border border-blue-300 opacity-0 group-hover:opacity-100 animate-pulse transition duration-300 pointer-events-none"></span>
               </motion.div>
             </Tilt>
           ))}

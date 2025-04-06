@@ -50,7 +50,7 @@ export default function StudentDashboard() {
   };
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("eventflowUser"));
+    const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       setFirstName(user.firstName);
       setLastName(user.lastName);
@@ -72,31 +72,31 @@ export default function StudentDashboard() {
         setLoading(false);
       }
     };
-  
+
     fetchEvents();
   }, []);
-  
+
 
   const handleRSVP = async (eventId) => {
-    const user = JSON.parse(localStorage.getItem("eventflowUser"));
+    const user = JSON.parse(localStorage.getItem("user"));
     const email = user?.email;
-  
+
     console.log("🔍 RSVP Data Sent:", { eventId, email });
-  
+
     if (!eventId || !email) {
       toast.error("❌ Missing event ID or email. Cannot RSVP.", toastErrorStyle);
       return;
     }
-  
+
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/rsvps`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ eventId, email })
       });
-  
+
       const data = await response.json();
-  
+
       if (response.status === 201) {
         toast.success("🎉 RSVP confirmed!", toastSuccessStyle);
       } else if (response.status === 409) {
@@ -109,19 +109,19 @@ export default function StudentDashboard() {
       toast.error("❌ Server error. Try again later.", toastErrorStyle);
     }
   };
-  
-  
-  
-  
+
+
+
+
   const handleLogout = () => {
-    localStorage.removeItem("eventflowUser");
+    localStorage.removeItem("user");
     toast.success("👋 Logged out successfully!", toastSuccessStyle);
     setTimeout(() => navigate("/"), 1500);
   };
 
   const handleProfileUpdate = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
+      const user = JSON.parse(localStorage.getItem("user")) || {};
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/update-profile`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -141,7 +141,7 @@ export default function StudentDashboard() {
         lastName: updated.lastName,
       };
 
-      localStorage.setItem("eventflowUser", JSON.stringify(updatedUser));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
       setFirstName(updated.firstName);
       setLastName(updated.lastName);
       setShowProfileModal(false);
@@ -173,133 +173,120 @@ export default function StudentDashboard() {
       >
         {/* Dark Mode Toggle */}
         {/* Top Bar with Greeting and Right Icons */}
-<div className="flex justify-between items-center mb-8">
-<div className="text-center w-full mb-1">  {/* Reduced margin-bottom to 4 */}
-  <motion.h1
-    initial={{ opacity: 0, y: -20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.8, delay: 0.2 }}
-    className="text-5xl sm:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-purple-700 to-pink-600 text-transparent bg-clip-text drop-shadow-lg break-words leading-[1.3] sm:leading-[1.85]"
-  >
-    {`Good ${new Date().getHours() < 12 ? "Morning" : new Date().getHours() < 18 ? "Afternoon" : "Evening"}, ${firstName}!`}
-  </motion.h1>
-</div>
-
-  {/* Right: Dark Mode Toggle + Avatar */}
-  <div className="flex items-center gap-4 absolute top-5 right-5 z-50 text-center">
-    {/* Dark mode toggle */}
-    <button
-      onClick={() => setDarkMode(!darkMode)}
-      className="p-2 rounded-full bg-white dark:bg-gray-800 text-purple-600 dark:text-yellow-400 shadow hover:scale-105 transition"
-    >
-      {darkMode ? <SunIcon className="w-5 h-5" /> : <MoonIcon className="w-5 h-5" />}
-    </button>
-
-    {/* Avatar */}
-    <div className="relative text-center">
-      <button
-        onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-        className="rounded-full border-4 border-white overflow-hidden shadow-md hover:shadow-lg transition"
-      >
-        <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold uppercase">
-          {firstName.charAt(0)}{lastName.charAt(0)}
+        <div className="flex justify-between items-center pt-24 sm:pt-12 mb-8">
+          <div className="text-center w-full">
+            <motion.h1
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-5xl sm:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-purple-700 to-pink-600 text-transparent bg-clip-text drop-shadow-lg break-words leading-[1.3] sm:leading-[1.85]"
+            >
+              {`Good ${new Date().getHours() < 12 ? "Morning" : new Date().getHours() < 18 ? "Afternoon" : "Evening"}, ${firstName}!`}
+            </motion.h1>
+          </div>
         </div>
-      </button>
-      <div className="text-sm mt-1 text-purple-800 dark:text-white font-semibold">
-        {firstName} {lastName}
-      </div>
-    </div>
-  </div>
-</div>
 
 
         {/* Profile Modal */}
         {showProfileModal && (
-  <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className="bg-white dark:bg-gray-900 rounded-2xl p-6 w-96 shadow-xl"
-    >
-      <h3 className="text-lg font-bold mb-4 text-purple-700 dark:text-purple-400">
-        Update Profile
-      </h3>
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">First Name</label>
-          <input
-            type="text"
-            value={tempFirstName}
-            onChange={(e) => setTempFirstName(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg bg-white text-black placeholder-gray-400 border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            placeholder="First Name"
-          />
-        </div>
-        <div>
-          <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">Last Name</label>
-          <input
-            type="text"
-            value={tempLastName}
-            onChange={(e) => setTempLastName(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg bg-white text-black placeholder-gray-400 border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-            placeholder="Last Name"
-          />
-        </div>
-        <div className="flex justify-end gap-2 pt-2">
-          <button
-            onClick={() => setShowProfileModal(false)}
-            className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleProfileUpdate}
-            className="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800"
-          >
-            Save
-          </button>
-        </div>
-      </div>
-    </motion.div>
-  </div>
-)}
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-30">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-white dark:bg-gray-900 rounded-2xl p-6 w-96 shadow-xl"
+            >
+              <h3 className="text-lg font-bold mb-4 text-purple-700 dark:text-purple-400">
+                Update Profile
+              </h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">First Name</label>
+                  <input
+                    type="text"
+                    value={tempFirstName}
+                    onChange={(e) => setTempFirstName(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg bg-white text-black placeholder-gray-400 border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                    placeholder="First Name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">Last Name</label>
+                  <input
+                    type="text"
+                    value={tempLastName}
+                    onChange={(e) => setTempLastName(e.target.value)}
+                    className="w-full px-3 py-2 border rounded-lg bg-white text-black placeholder-gray-400 border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                    placeholder="Last Name"
+                  />
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    onClick={() => setShowProfileModal(false)}
+                    className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-700"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleProfileUpdate}
+                    className="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
 
 
         {/* User Avatar */}
-        <div className="absolute top-5 right-5 z-50 text-center">
+        {/* Top-right: Dark mode toggle + Avatar + Name + Menu */}
+        <div className="absolute top-5 right-5 z-50 flex items-center gap-4 text-center">
+          {/* Dark mode toggle */}
           <button
-            onClick={() => setProfileMenuOpen(!profileMenuOpen)}
-            className="rounded-full border-4 border-white overflow-hidden shadow-md hover:shadow-lg"
+            onClick={() => setDarkMode(!darkMode)}
+            className="p-2 rounded-full bg-white dark:bg-gray-800 text-purple-600 dark:text-yellow-400 shadow hover:scale-105 transition"
           >
-            <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold uppercase">
-              {firstName.charAt(0)}{lastName.charAt(0)}
-            </div>
+            {darkMode ? <SunIcon className="w-5 h-5" /> : <MoonIcon className="w-5 h-5" />}
           </button>
-          <div className="text-sm mt-1 font-semibold">{firstName} {lastName}</div>
-          {profileMenuOpen && (
-  <motion.div
-    initial={{ opacity: 0, y: -10 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700"
-  >
-    <button
-      onClick={openProfileModal}
-      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-    >
-      <PencilIcon className="w-4 h-4" />
-      Update Profile
-    </button>
-    <button
-      onClick={handleLogout}
-      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900 dark:text-red-400"
-    >
-      <LogOutIcon className="w-4 h-4" />
-      Logout
-    </button>
-  </motion.div>
-)}
 
+          {/* Avatar + name + dropdown */}
+          <div className="relative text-center">
+            <button
+              onClick={() => setProfileMenuOpen(!profileMenuOpen)}
+              className="rounded-full border-4 border-white overflow-hidden shadow-md hover:shadow-lg"
+            >
+              <div className="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold uppercase">
+                {(firstName?.[0] || "") + (lastName?.[0] || "")}
+              </div>
+            </button>
+            <div className="text-sm mt-1 font-semibold">{firstName} {lastName}</div>
+
+            {profileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700"
+              >
+                <button
+                  onClick={openProfileModal}
+                  className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+                >
+                  <PencilIcon className="w-4 h-4" />
+                  Update Profile
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900 dark:text-red-400"
+                >
+                  <LogOutIcon className="w-4 h-4" />
+                  Logout
+                </button>
+              </motion.div>
+            )}
+          </div>
         </div>
+
 
         {/* Event Cards */}
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3 mt-20">

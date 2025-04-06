@@ -22,6 +22,36 @@ export default function ApproveEvents({ role = "Admin" }) {
     const rolePaths = {
         Admin: "/admin-dashboard"
     };
+    
+  const toastSuccessStyle = {
+    style: {
+      fontSize: "1.1rem",
+      padding: "1.3rem",
+      background: darkMode ? "#333" : "#fefefe",
+      color: darkMode ? "#1e90ff" : "#1e3a8a",
+      fontWeight: "bold",
+      border: darkMode ? "1px solid #1e90ff" : "1px solid #1e3a8a",
+    },
+    iconTheme: {
+      primary: darkMode ? "#1e90ff" : "#1e3a8a",
+      secondary: "white",
+    },
+  };
+
+  const toastErrorStyle = {
+    style: {
+      fontSize: "1.1rem",
+      padding: "1.3rem",
+      background: darkMode ? "#330000" : "#fff0f0",
+      color: "#ff4d4d",
+      fontWeight: "bold",
+      border: "1px solid #ff4d4d",
+    },
+    iconTheme: {
+      primary: "#ff4d4d",
+      secondary: "white",
+    },
+  };
 
     // Fetch events
     const fetchEvents = async () => {
@@ -29,7 +59,7 @@ export default function ApproveEvents({ role = "Admin" }) {
             const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events/pending`);
             setEvents(res.data);
         } catch {
-            toast.error("Failed to fetch events.");
+            toast.error("Failed to fetch events.", toastErrorStyle);
         }
     };
 
@@ -37,10 +67,10 @@ export default function ApproveEvents({ role = "Admin" }) {
     const handleApprove = async (eventId) => {
         try {
             await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/events/approve/${eventId}`, { isApproved: true });
-            toast.success("Event approved!");
+            toast.success("Event approved!", toastSuccessStyle);
             fetchEvents();
         } catch {
-            toast.error("❌ Failed to approve event");
+            toast.error("❌ Failed to approve event", toastErrorStyle);
         }
     };
 
@@ -51,17 +81,17 @@ export default function ApproveEvents({ role = "Admin" }) {
                 isActive: false,
                 isApproved: false
             });
-            toast.success("🗑️ Event deleted");
+            toast.success("🗑️ Event deleted", toastSuccessStyle);
             setConfirmDeleteId(null);
             fetchEvents();
         } catch {
-            toast.error("Failed to delete event");
+            toast.error("Failed to delete event", toastErrorStyle);
         }
     };
 
     // Dark mode toggle effect
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("eventflowUser"));
+        const user = JSON.parse(localStorage.getItem("user"));
         if (user) {
             setFirstName(user.firstName);
             setLastName(user.lastName);
@@ -81,7 +111,37 @@ export default function ApproveEvents({ role = "Admin" }) {
 
     return (
         <div className={`min-h-screen px-4 sm:px-6 pt-24 pb-4 transition-colors duration-500 ${darkMode ? "bg-gray-900" : "bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100"}`}>
-            <Toaster />
+                  <Toaster
+                    position="top-center"
+                    reverseOrder={false}
+                    containerStyle={{ zIndex: 99999 }}  // ensures toast stays on top
+                    toastOptions={{
+                      style: {
+                        backdropFilter: "none",
+                        WebkitBackdropFilter: "none",
+                        background: "#fff0f0",
+                        color: "#cc0000",
+                        border: "1px solid #cc0000",
+                        fontWeight: "bold",
+                        fontSize: "1.1rem",
+                      },
+                      success: {
+                        style: {
+                          background: "#f0fff0",
+                          color: "#006400",
+                          border: "1px solid #006400",
+                        },
+                      },
+                      error: {
+                        style: {
+                          background: "#fff0f0",
+                          color: "#cc0000",
+                          border: "1px solid #cc0000",
+                        },
+                      },
+                    }}
+                  />
+            
             
             {/* Dark Mode and Profile Menu */}
             <div className="absolute top-4 right-6 z-50 flex items-center gap-4">

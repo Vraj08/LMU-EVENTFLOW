@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CardContent } from "./ui/Card";
 import { Button } from "./ui/Button";
-import { CalendarIcon, ClockIcon } from "lucide-react";
+import { CalendarIcon, ClockIcon,ArrowLeft } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import DashboardTopbar from "../components/DashboardTopbar";
 
@@ -31,7 +31,7 @@ const UpcomingEventsLayout = ({ backPath = "/", role = "User" }) => {
 
     fetchEvents();
 
-    const user = JSON.parse(localStorage.getItem("eventflowUser"));
+    const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       setFirstName(user.firstName);
       setLastName(user.lastName);
@@ -69,7 +69,7 @@ const UpcomingEventsLayout = ({ backPath = "/", role = "User" }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("eventflowUser");
+    localStorage.removeItem("user");
     toast.success("👋 Logged out successfully!", toastSuccessStyle);
     setTimeout(() => navigate("/"), 1500);
   };
@@ -81,7 +81,7 @@ const UpcomingEventsLayout = ({ backPath = "/", role = "User" }) => {
   };
 
   const handleRSVP = async (eventId) => {
-    const user = JSON.parse(localStorage.getItem("eventflowUser"));
+    const user = JSON.parse(localStorage.getItem("user"));
     const email = user?.email;
 
     if (!eventId || !email) {
@@ -154,7 +154,8 @@ const UpcomingEventsLayout = ({ backPath = "/", role = "User" }) => {
               onClick={handleBackClick}
               className="flex items-center text-purple-700 hover:text-purple-900 font-medium mb-4"
             >
-               Back to {role} Dashboard
+             <ArrowLeft className="w-5 h-5 mr-2" />
+             {`Back to ${role} Dashboard`}
             </button>
             <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight bg-gradient-to-r from-blue-500 via-purple-600 to-pink-600 text-transparent bg-clip-text drop-shadow-3xl text-center w-full mb-2 leading-[1.6] sm:leading-[2]">
               Upcoming Events

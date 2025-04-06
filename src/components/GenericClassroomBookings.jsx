@@ -141,7 +141,7 @@ export default function ClassroomBookingPage({ role = "User" }) {
     "Campus Safety": "/campus-safety-dashboard",
     Marketing: "/marketing-dashboard",
     Faculty: "/faculty-dashboard",
-    Admin:"/admin-dashboard"
+    Admin: "/admin-dashboard"
   };
   const [selectedBuilding, setSelectedBuilding] = useState(
     Object.keys(buildings)[0]
@@ -152,7 +152,7 @@ export default function ClassroomBookingPage({ role = "User" }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [bookings, setBookings] = useState([]);
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("eventflowUser"));
+    const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       setFirstName(user.firstName);
       setLastName(user.lastName);
@@ -196,21 +196,19 @@ export default function ClassroomBookingPage({ role = "User" }) {
         />
       </div>
 
-      <div className="fixed top-4 left-6 z-50">
-        <button
-          onClick={() => {
-            if (rolePaths[role]) {
-              navigate(rolePaths[role]);
-            } else {
-              navigate("/generic-dashboard");
-            }
-          }}
-          className="absolute top-5 left-5 flex items-center text-purple-700 hover:text-purple-900 font-medium z-60 whitespace-nowrap"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          {`Back to ${role} Dashboard`}
-        </button>
-      </div>
+      <button
+        onClick={() => {
+          if (rolePaths[role]) {
+            navigate(rolePaths[role]);
+          } else {
+            navigate("/generic-dashboard");
+          }
+        }}
+        className="absolute top-5 left-5 z-50 flex items-center text-purple-700 hover:text-purple-900 font-medium whitespace-nowrap"
+      >
+        <ArrowLeft className="w-5 h-5 mr-2" />
+        {`Back to ${role} Dashboard`}
+      </button>
 
 
       <div className={`min-h-screen p-4 flex flex-col items-center justify-center transition-colors duration-500 ${darkMode
@@ -218,7 +216,7 @@ export default function ClassroomBookingPage({ role = "User" }) {
         : "bg-gradient-to-br from-[#f0f9ff] via-[#e6f0ff] to-[#fdfcff] text-gray-900"
         }`}>
         <div className="w-full max-w-6xl space-y-6">
-          <h1 className="text-4xl sm:text-5xl font-bold text-center text-purple-700 drop-shadow-md">
+          <h1 className="text-4xl sm:text-5xl font-bold text-center text-purple-700 drop-shadow-md mt-20 sm:mt-10">
             📚 Classroom Booking
           </h1>
 
@@ -348,7 +346,7 @@ export default function ClassroomBookingPage({ role = "User" }) {
             onCancel={() => setShowProfileModal(false)}
             onSave={async () => {
               try {
-                const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
+                const user = JSON.parse(localStorage.getItem("user")) || {};
                 const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/update-profile`, {
                   method: "PUT",
                   headers: { "Content-Type": "application/json" },
@@ -368,7 +366,7 @@ export default function ClassroomBookingPage({ role = "User" }) {
                   lastName: updated.lastName,
                 };
 
-                localStorage.setItem("eventflowUser", JSON.stringify(updatedUser));
+                localStorage.setItem("user", JSON.stringify(updatedUser));
                 setFirstName(updated.firstName);
                 setLastName(updated.lastName);
                 setShowProfileModal(false);

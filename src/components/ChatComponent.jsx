@@ -14,10 +14,14 @@ export default function ChatComponent({ user, department, defaultDepartment }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const manuallyOpenedChat = useRef(false);
   const departmentMapping = {
-    'parking@lmu.edu': 'vpatel16@lion.lmu.edu',
+    'its@lmu.edu': 'vpatel16@lion.lmu.edu',
     'facilities-management@lmu.edu': 'aprabha1@lion.lmu.edu',
-    'sodexo@lmu.edu': 'vpatel16@lion.lmu.edu',
-    'its@lmu.edu': 'dpatel52@lion.lmu.edu'
+    'sodexo@lmu.edu': 'jpatel30@lion.lmu.edu',
+    'campus-safety@lmu.edu': 'dpatel52@lion.lmu.edu',
+    'marketing@lmu.edu': 'jpancha1@lion.lmu.edu',
+    'campus-graphics@lmu.edu': 'aprabha1@lion.lmu.edu',
+    'event-organization@lmu.edu': 'jpatel30@lion.lmu.edu',
+    'parking@lmu.edu': 'dpatel52@lion.lmu.edu',
   };
   const ws = useRef(null);
   const clientIdRef = useRef(Math.random().toString(36).slice(2));

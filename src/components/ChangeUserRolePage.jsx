@@ -86,7 +86,7 @@ const ChangeUserRolePage = () => {
         ]);
     
         // Load profile name from localStorage
-        const user = JSON.parse(localStorage.getItem("eventflowUser"));
+        const user = JSON.parse(localStorage.getItem("user"));
         if (user) {
             setFirstName(user.firstName);
             setLastName(user.lastName);
@@ -112,8 +112,8 @@ const ChangeUserRolePage = () => {
     // Handle profile update
     const handleProfileUpdate = () => {
         // Update the user profile in localStorage
-        const updatedUser = { ...JSON.parse(localStorage.getItem("eventflowUser")), firstName, lastName };
-        localStorage.setItem("eventflowUser", JSON.stringify(updatedUser));
+        const updatedUser = { ...JSON.parse(localStorage.getItem("user")), firstName, lastName };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
 
         // Close the modal and update the state
         setShowProfileModal(false);

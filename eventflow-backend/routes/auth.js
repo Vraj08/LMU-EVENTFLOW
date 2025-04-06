@@ -10,6 +10,44 @@ router.use((req, res, next) => {
   next();
 });
 
+const nodemailer = require("nodemailer");
+
+router.post("/send-otp", async (req, res) => {
+  const { email, otp, time } = req.body;
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "lmueventflow@gmail.com",
+      pass: "uaxm rmxi dayt ugml", // app password
+    },
+  });
+
+  const mailOptions = {
+    from: `"LMU EVENTFLOW" <lmueventflow@gmail.com>`,
+    to: email,
+    subject: "Your LMU EVENTFLOW OTP",
+    html: `
+      <p>To authenticate, please use the following One Time Password (OTP):</p>
+      <h2 style="color:#1e90ff;">${otp}</h2>
+      <p>This OTP will be valid for 15 minutes till <strong>${time}</strong>.</p>
+      <br />
+      <p><i>Do not share this OTP with anyone. If you didn't make this request, you can safely ignore this email.</i></p>
+      <p style="font-size:0.9em;color:#555;">LMU EVENTFLOW will never contact you about this email or ask for any login codes or links.</p>
+      <br />
+      <p>Thanks for visiting LMU EVENTFLOW!</p>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: "OTP sent successfully" });
+  } catch (error) {
+    console.error("❌ Failed to send OTP:", error);
+    res.status(500).json({ message: "Failed to send email" });
+  }
+});
+
 
 // POST /api/login
 router.post("/login", async (req, res) => {
@@ -35,9 +73,11 @@ router.post("/login", async (req, res) => {
     }
 
     // Infer role from email domain
-    const userType = email.endsWith("@lion.lmu.edu") ? "student"
-                     : email.endsWith("@lmu.edu") ? "faculty"
-                     : null;
+    const userType = email.endsWith("@lion.lmu.edu")
+  ? "Student"
+  : email.endsWith("@lmu.edu")
+  ? "Faculty"
+  : null;
 
     if (!userType) {
       return res.status(400).json({ message: "Invalid email domain" });

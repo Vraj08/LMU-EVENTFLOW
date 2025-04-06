@@ -17,7 +17,7 @@ function GenericDashboard({ basePath = "/generic", roleName = "User" }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("eventflowUser"));
+    const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       setFirstName(user.firstName);
       setLastName(user.lastName);
@@ -55,14 +55,14 @@ function GenericDashboard({ basePath = "/generic", roleName = "User" }) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("eventflowUser");
+    localStorage.removeItem("user");
     toast.success("👋 Logged out successfully!", toastSuccessStyle);
     setTimeout(() => navigate("/"), 1500);
   };
 
   const handleProfileUpdate = async (newFirst, newLast) => {
     toast.remove();
-    const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
+    const user = JSON.parse(localStorage.getItem("user")) || {};
 
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/update-profile`, {
@@ -87,7 +87,7 @@ function GenericDashboard({ basePath = "/generic", roleName = "User" }) {
         lastName: data.lastName,
       };
 
-      localStorage.setItem("eventflowUser", JSON.stringify(updatedUser));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
       setFirstName(data.firstName);
       setLastName(data.lastName);
       return toast.success(" Profile updated successfully!", toastSuccessStyle);
@@ -135,31 +135,30 @@ function GenericDashboard({ basePath = "/generic", roleName = "User" }) {
       description: "Check your chat messages with departments.",
       icon: <MessageCircle className="w-8 h-8 text-purple-500 dark:text-blue-300" />,
       onClick: () => navigate(`${basePath}-dashboard/messages`)
-    }    
+    }
   ];
-  
+
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
       <motion.div
-        className={`relative p-10 min-h-screen transition-colors duration-500 ${
-          darkMode
-            ? "bg-gray-900 text-white"
-            : "bg-gradient-to-br from-indigo-100 via-pink-100 to-purple-200 text-black"
-        }`}
+        className={`relative p-10 min-h-screen transition-colors duration-500 ${darkMode
+          ? "bg-gray-900 text-white"
+          : "bg-gradient-to-br from-indigo-100 via-pink-100 to-purple-200 text-black"
+          }`}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-      >
-        <DashboardTopbar
-          darkMode={darkMode}
-          setDarkMode={setDarkMode}
-          firstName={firstName}
-          lastName={lastName}
-          onLogout={handleLogout}
-          onProfileUpdate={handleProfileUpdate}
-        />
-
+      ><div className="mb-16">
+          <DashboardTopbar
+            darkMode={darkMode}
+            setDarkMode={setDarkMode}
+            firstName={firstName}
+            lastName={lastName}
+            onLogout={handleLogout}
+            onProfileUpdate={handleProfileUpdate}
+          />
+        </div>
         <div className="text-center w-full mb-10">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}

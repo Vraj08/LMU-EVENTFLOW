@@ -34,7 +34,7 @@ export default function GenericManageEvents({ role = "User" }) {
 
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("eventflowUser"));
+        const user = JSON.parse(localStorage.getItem("user"));
         if (user) {
             setFirstName(user.firstName);
             setLastName(user.lastName);
@@ -51,7 +51,7 @@ export default function GenericManageEvents({ role = "User" }) {
     }, [darkMode]);
     const handleProfileUpdate = async () => {
         try {
-            const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
+            const user = JSON.parse(localStorage.getItem("user")) || {};
             const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/update-profile`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -71,7 +71,7 @@ export default function GenericManageEvents({ role = "User" }) {
                 lastName: updated.lastName,
             };
 
-            localStorage.setItem("eventflowUser", JSON.stringify(updatedUser));
+            localStorage.setItem("user", JSON.stringify(updatedUser));
             setFirstName(updated.firstName);
             setLastName(updated.lastName);
             setShowProfileModal(false);
@@ -85,7 +85,7 @@ export default function GenericManageEvents({ role = "User" }) {
 
     const fetchEvents = async () => {
         try {
-            const user = JSON.parse(localStorage.getItem("eventflowUser"));
+            const user = JSON.parse(localStorage.getItem("user"));
             const encodedEmail = encodeURIComponent(user.email);
             const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/events/user/${encodedEmail}`);
             setEvents(res.data.filter(e => e.isApproved));
@@ -128,7 +128,7 @@ export default function GenericManageEvents({ role = "User" }) {
                     onEditClick={() => setShowProfileModal(true)}
                 />
             </div>
-            <div className="fixed top-4 left-6 z-50">
+            <div className="w-full px-6 pt-6">
                 <button
                     onClick={() => {
                         if (rolePaths[role]) {

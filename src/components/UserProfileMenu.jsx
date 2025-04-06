@@ -9,7 +9,7 @@ export default function UserProfileMenu({ firstName, lastName, onEditClick }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("eventflowUser");
+    localStorage.removeItem("user");
     toast.success("Logged out successfully!");
     setTimeout(() => navigate("/"), 1000);
   };

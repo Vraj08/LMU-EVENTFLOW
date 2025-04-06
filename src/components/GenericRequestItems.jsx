@@ -31,7 +31,7 @@ export default function GenericRequestItems({ role = "User" }) {
     const [lastName, setLastName] = useState("");
     const [tempFirstName, setTempFirstName] = useState("");
     const [tempLastName, setTempLastName] = useState("");
-    const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
+    const user = JSON.parse(localStorage.getItem("user")) || {};
     const rolePaths = {
         Sodexo: "/sodexo-dashboard",
         ITS: "/its-dashboard",
@@ -46,7 +46,7 @@ export default function GenericRequestItems({ role = "User" }) {
       };
       
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("eventflowUser"));
+        const user = JSON.parse(localStorage.getItem("user"));
         if (user) {
             setFirstName(user.firstName);
             setLastName(user.lastName);
@@ -182,7 +182,7 @@ export default function GenericRequestItems({ role = "User" }) {
                                 </button>
                                 <button
                                     onClick={() => {
-                                        localStorage.removeItem("eventflowUser");
+                                        localStorage.removeItem("user");
                                         setTimeout(() => navigate("/"), 1000);
                                     }}
                                     className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900 dark:text-red-400"
@@ -238,7 +238,7 @@ export default function GenericRequestItems({ role = "User" }) {
                                         const selectedDepartment = requestOptions[index];
                                         localStorage.setItem("chatDepartment", selectedDepartment);
                                       
-                                        const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
+                                        const user = JSON.parse(localStorage.getItem("user")) || {};
                                         const rawRole = user?.role || user?.userType || "generic";
                                         const role =
                                           rawRole
@@ -331,13 +331,13 @@ export default function GenericRequestItems({ role = "User" }) {
                                         </button>
                                         <button
                                             onClick={() => {
-                                                const user = JSON.parse(localStorage.getItem("eventflowUser")) || {};
+                                                const user = JSON.parse(localStorage.getItem("user")) || {};
                                                 const updatedUser = {
                                                     ...user,
                                                     firstName: tempFirstName,
                                                     lastName: tempLastName,
                                                 };
-                                                localStorage.setItem("eventflowUser", JSON.stringify(updatedUser));
+                                                localStorage.setItem("user", JSON.stringify(updatedUser));
                                                 setFirstName(tempFirstName);
                                                 setLastName(tempLastName);
                                                 setShowProfileModal(false);
