@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+
 import { motion, AnimatePresence, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import toast, { Toaster } from "react-hot-toast";
@@ -17,22 +18,72 @@ import {
 } from "react-icons/fa";
 
 const developers = [
-  { name: "Vraj Patel", role: "Frontend Developer", image: "/assets/vraj.jpg" },
-  { name: "Divy Patel", role: "Backend Developer", image: "/assets/divy.jpg" },
-  { name: "Jinil Patel", role: "UI/UX Designer", image: "/assets/jinil.jpg" },
-  { name: "Ayush Prabhakar", role: "Product Owner", image: "/assets/ayush.jpg" },
-  { name: "Jay Panchal", role: "DevOps Engineer", image: "/assets/jay.jpg" }
+  {
+    name: "Vraj Patel",
+    role: "Team Lead • Full Stack Wizard & UI/UX Architect",
+    image: "/assets/vraj.jpg"
+  },
+  {
+    name: "Divy Patel",
+    role: "Backend Specialist • Data Modeling & API Guru",
+    image: "/assets/divy.jpg"
+  },
+  {
+    name: "Jinil Patel",
+    role: "UI/UX Visionary • Design Systems & Interactions",
+    image: "/assets/jinil.jpg"
+  },
+  {
+    name: "Ayush Prabhakar",
+    role: "Product Owner • Quality Analyst & Tester",
+    image: "/assets/ayush.jpg"
+  },
+  {
+    name: "Jay Panchal",
+    role: "Backend Engineer • Services, Security & Infrastructure",
+    image: "/assets/jay.jpg"
+  }
 ];
 
 
-
+const developerBios = {
+  "Vraj Patel": "Vraj oversaw the project’s technical direction while crafting seamless user flows and interfaces alongside Jinil. His full stack skills ensured the frontend and backend stayed in sync throughout development.",
+  "Divy Patel": "Divy engineered the platform’s core logic and APIs, working closely with Jay to create a scalable and efficient backend that powers the entire system.",
+  "Jinil Patel": "Jinil designed elegant and intuitive interfaces, translating ideas into engaging visuals. He worked hand-in-hand with Vraj to ensure the user experience felt natural and refined.",
+  "Ayush Prabhakar": "Ayush aligned the team around goals, prioritized features, and tested every component with precision. His attention to detail helped polish the user journey from start to finish.",
+  "Jay Panchal": "Jay implemented backend services and security protocols, collaborating with Divy to ensure the system stayed robust, secure, and ready to scale under pressure."
+};
 const features = [
-  { icon: FaCalendarCheck, title: "Event Scheduling", desc: "Book rooms, manage timelines, and sync with campus calendars." },
-  { icon: FaUserShield, title: "Role-Based Access", desc: "Permissions for students, faculty, and supervisors." },
-  { icon: FaHandshake, title: "Unified Requests", desc: "Request resources from facilities, ITS, and Sodexo." },
-  { icon: FaCogs, title: "Automation", desc: "Streamlined workflows and notifications." },
-  { icon: FaChartLine, title: "Analytics Dashboard", desc: "Visualize RSVPs, requests, and participation." },
-  { icon: FaMobileAlt, title: "Responsive Design", desc: "Optimized for mobile, tablet, and desktop." }
+  {
+    icon: FaCalendarCheck,
+    title: "Smart Event Scheduling",
+    desc: "Plan and schedule events with real-time availability and conflict resolution."
+  },
+  {
+    icon: FaUserShield,
+    title: "Secure Role-Based Access",
+    desc: "Custom dashboards and access controls for students, staff, and departments."
+  },
+  {
+    icon: FaHandshake,
+    title: "Centralized Request System",
+    desc: "Request services from ITS, Facilities, and Catering with unified tracking."
+  },
+  {
+    icon: FaCogs,
+    title: "Process Automation",
+    desc: "Reduce manual effort with automated approvals, reminders, and workflows."
+  },
+  {
+    icon: FaChartLine,
+    title: "Insightful Analytics",
+    desc: "Monitor participation, service efficiency, and resource utilization at a glance."
+  },
+  {
+    icon: FaMobileAlt,
+    title: "Mobile-Friendly Experience",
+    desc: "Access the platform anywhere with a responsive and intuitive interface."
+  }
 ];
 
 export default function HomePage() {
@@ -50,6 +101,8 @@ export default function HomePage() {
   const [showNameModal, setShowNameModal] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const otpRequested = useRef(false);
+
   const dashboardRoutes = {
     Student: "/student-dashboard",
     Admin: "/admin-dashboard",
@@ -63,25 +116,25 @@ export default function HomePage() {
     "Campus Safety": "/campus-safety-dashboard",
     Marketing: "/marketing-dashboard"
   };
-  
+
   const toTitleCase = (str = "") =>
     str
       .toLowerCase()
       .split(" ")
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
-  
+
   const redirectToDashboard = (userType) => {
     const normalized = toTitleCase(userType);
     const route = dashboardRoutes[normalized];
-  
+
     if (route) {
       window.location.href = route;
     } else {
       window.location.href = "/unauthorized";
     }
   };
-  
+
 
   useEffect(() => {
     if (isInView) animation.start({ opacity: 1, y: 0 });
@@ -131,7 +184,8 @@ export default function HomePage() {
   };
 
   const handleSendOTP = async () => {
-    if (otpSent || resendTimer > 0) return;
+    if (otpRequested.current || otpSent || resendTimer > 0) return;
+    otpRequested.current = true; 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@(lion\.)?lmu\.edu$/;
     if (!emailRegex.test(email)) {
       toast.error("Only @lmu.edu or @lion.lmu.edu emails allowed.", toastErrorStyle);
@@ -148,7 +202,7 @@ export default function HomePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, otp: otpCode, time: expiryTime }),
       });
-      
+
       toast.success("OTP sent to your email", toastSuccessStyle);
       setOtpSent(true);
       setResendTimer(60);
@@ -499,8 +553,9 @@ export default function HomePage() {
                   <h3 className="text-xl font-bold mb-1">{dev.name}</h3>
                   <p className="text-sm mb-2">{dev.role}</p>
                   <p className="text-xs">
-                    {`${dev.name.split(" ")[0]} is part of the LMU EventFlow team helping transform how events are managed and coordinated across campus.`}
+                    {developerBios[dev.name]}
                   </p>
+
                 </div>
               </motion.div>
             </motion.div>
