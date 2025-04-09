@@ -42,9 +42,9 @@ export default function GenericRequestItems({ role = "User" }) {
         "Campus Safety": "/campus-safety-dashboard",
         Marketing: "/marketing-dashboard",
         Faculty: "/faculty-dashboard",
-        Admin:"/admin-dashboard"
-      };
-      
+        Admin: "/admin-dashboard"
+    };
+
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem("user"));
         if (user) {
@@ -68,37 +68,37 @@ export default function GenericRequestItems({ role = "User" }) {
 
     useEffect(() => {
         setCanNavigate(typeof navigate === 'function');
-      
+
         // ✅ Clear department after it's been used
         const defaultDept = localStorage.getItem("chatDepartment");
         if (defaultDept) {
-          localStorage.removeItem("chatDepartment");
+            localStorage.removeItem("chatDepartment");
         }
-      }, [navigate]);
-      
-      
+    }, [navigate]);
     const cardGradients = [
-        "from-pink-100 to-purple-200",
-        "from-blue-100 to-cyan-200",
-        "from-green-100 to-emerald-200",
-        "from-yellow-100 to-orange-200",
-        "from-red-100 to-pink-200",
-        "from-violet-100 to-indigo-200",
-        "from-amber-100 to-yellow-200",
-        "from-rose-100 to-pink-200"
-    ];
-
-    const glowColors = [
-        "#ec4899",
-        "#3b82f6",
-        "#22c55e",
-        "#eab308",
-        "#ef4444",
-        "#a855f7",
-        "#f59e0b",
-        "#fb7185"
-    ];
-
+        "from-red-500 via-rose-500 to-orange-500",          // Sodexo – Red/Rose
+        "from-yellow-400 via-amber-400 to-lime-400",        // ITS – Yellow/Lime
+        "from-green-500 via-emerald-500 to-teal-400",       // Parking – Green/Teal
+        "from-cyan-500 via-sky-500 to-blue-500",            // Event Org – Cyan/Blue
+        "from-indigo-600 via-violet-500 to-purple-500",     // Facilities – Indigo/Violet
+        "from-pink-500 via-fuchsia-500 to-rose-400",        // Graphics – Pink/Fuchsia
+        "from-orange-500 via-amber-500 to-yellow-500",      // Campus Safety – Orange/Gold
+        "from-zinc-600 via-neutral-500 to-gray-400"         // Marketing – Gray/Metallic
+      ];
+      
+      
+      const glowColors = [
+        "#ef4444", // Sodexo – Red
+        "#eab308", // ITS – Yellow
+        "#10b981", // Parking – Green
+        "#0ea5e9", // Event Org – Cyan
+        "#8b5cf6", // Facilities – Violet
+        "#ec4899", // Graphics – Pink
+        "#f97316", // Campus Safety – Orange
+        "#a3a3a3"  // Marketing – Gray
+      ];
+      
+      
     const iconComponents = [
         UtensilsCrossed,
         Laptop2,
@@ -140,11 +140,11 @@ export default function GenericRequestItems({ role = "User" }) {
         <div className={`min-h-screen px-6 pt-32 pb-16 font-sans transition-colors duration-500 ${darkMode ? "bg-gray-900 text-white" : "bg-gradient-to-br from-sky-100 via-purple-100 to-pink-100 text-black"}`}>
             <Toaster position="top-center" reverseOrder={false} />
             <button
-  onClick={() => navigate(rolePaths[role] || "/generic-dashboard")}
-  className="absolute top-5 left-5 flex items-center text-purple-700 hover:text-purple-900 font-medium z-60"
->
-  <ArrowLeft className="w-5 h-5 mr-2" /> {`Back to ${role} Dashboard`}
-</button>
+                onClick={() => navigate(rolePaths[role] || "/generic-dashboard")}
+                className="absolute top-5 left-5 flex items-center text-purple-700 hover:text-purple-900 font-medium z-60"
+            >
+                <ArrowLeft className="w-5 h-5 mr-2" /> {`Back to ${role} Dashboard`}
+            </button>
 
             <div className="max-w-6xl mx-auto">
                 <div className="absolute top-6 right-6 flex items-center gap-4 z-50">
@@ -237,40 +237,44 @@ export default function GenericRequestItems({ role = "User" }) {
                                     onClick={() => {
                                         const selectedDepartment = requestOptions[index];
                                         localStorage.setItem("chatDepartment", selectedDepartment);
-                                      
+
                                         const user = JSON.parse(localStorage.getItem("user")) || {};
                                         const rawRole = user?.role || user?.userType || "generic";
                                         const role =
-                                          rawRole
-                                            .toLowerCase()
-                                            .split(" ")
-                                            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                                            .join(" "); // e.g., "facilities management" → "Facilities Management"
-                                      
+                                            rawRole
+                                                .toLowerCase()
+                                                .split(" ")
+                                                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                                .join(" "); // e.g., "facilities management" → "Facilities Management"
+
                                         console.log("🧠 Logged-in user object:", user);
                                         console.log("🔑 Normalized role:", role);
-                                      
+
                                         const rolePaths = {
-                                          Sodexo: "/sodexo-dashboard",
-                                          Its: "/its-dashboard",
-                                          Parking: "/parking-dashboard",
-                                          "Event Organization": "/event-organization-dashboard",
-                                          "Facilities Management": "/facilities-management-dashboard",
-                                          "Campus Graphics": "/campus-graphics-dashboard",
-                                          "Campus Safety": "/campus-safety-dashboard",
-                                          Marketing: "/marketing-dashboard",
-                                          Faculty: "/faculty-dashboard"
+                                            Sodexo: "/sodexo-dashboard",
+                                            Its: "/its-dashboard",
+                                            Parking: "/parking-dashboard",
+                                            "Event Organization": "/event-organization-dashboard",
+                                            "Facilities Management": "/facilities-management-dashboard",
+                                            "Campus Graphics": "/campus-graphics-dashboard",
+                                            "Campus Safety": "/campus-safety-dashboard",
+                                            Marketing: "/marketing-dashboard",
+                                            Faculty: "/faculty-dashboard"
                                         };
-                                      
+
                                         const dashboardPath = rolePaths[role] || "/generic-dashboard";
                                         console.log("📍 Final dashboardPath:", dashboardPath);
-                                      
+
                                         navigate(`${dashboardPath}/messages`);
-                                      }}
-                                      
-                                                                                                           
+                                    }}
+
+
                                     className={`group relative cursor-pointer rounded-3xl p-6 bg-gradient-to-br ${cardGradients[index]} dark:bg-zinc-900 border border-purple-200 dark:border-zinc-700 transition-all duration-300 overflow-hidden shadow-xl hover:shadow-2xl`}
-                                    style={{ boxShadow: `0 0 20px 4px ${glowColors[index]}` }}
+                                    style={{
+                                        boxShadow: `0 0 20px 4px ${glowColors[index]}`,
+                                        transition: "box-shadow 0.4s ease-in-out"
+                                    }}
+
                                 >
                                     <div
                                         className="absolute inset-0 rounded-3xl border-2 opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none z-0"
@@ -284,12 +288,13 @@ export default function GenericRequestItems({ role = "User" }) {
                                         >
                                             <Icon className="w-10 h-10" />
                                         </motion.div>
-                                        <h3 className="text-xl font-bold text-purple-700 dark:text-yellow-300">
+                                        <h3 className="text-xl font-bold text-white dark:text-yellow-200 drop-shadow-md">
                                             {title}
                                         </h3>
-                                        <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                                        <p className="mt-2 text-sm text-white/90 dark:text-gray-300 drop-shadow-sm">
                                             {descriptions[index]}
                                         </p>
+
                                     </div>
                                 </motion.div>
                             </Tilt>
