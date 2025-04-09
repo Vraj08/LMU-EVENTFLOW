@@ -147,6 +147,7 @@ function App() {
           ["Campus Graphics", CampusGraphicsDashboard],
           ["Campus Safety", CampusSafetyDashboard],
           ["Marketing", MarketingDashboard],
+          ["Admin", AdminDashboard],
         ].map(([role, Dashboard]) => (
           <React.Fragment key={role}>
             <Route path={`/${role.toLowerCase().replace(/ /g, "-")}-dashboard`} element={
