@@ -259,9 +259,13 @@ export default function GenericRequestItems({ role = "User" }) {
                                             "Campus Graphics": "/campus-graphics-dashboard",
                                             "Campus Safety": "/campus-safety-dashboard",
                                             Marketing: "/marketing-dashboard",
-                                            Faculty: "/faculty-dashboard"
+                                            Faculty: "/faculty-dashboard",
+                                             Admin:"/admin-dashboard"
                                         };
-
+                                        const normalizedRole = Object.keys(rolePaths).find(
+                                            key => key.toLowerCase() === role.toLowerCase()
+                                          );
+                                          
                                         const dashboardPath = rolePaths[role] || "/generic-dashboard";
                                         console.log("📍 Final dashboardPath:", dashboardPath);
 
