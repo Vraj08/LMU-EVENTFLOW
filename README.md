@@ -5,7 +5,7 @@ LMU EventFlow is a secure, role-based event management platform tailored for the
 
 ## 🚀 Live Demo
 
-> [LMU EventFlow (13-week project)](https://github.com/Vraj08/LMU-EVENTFLOW)
+> [LMU EventFlow (13-week project)](https://lmu-eventflow.vercel.app/)
 
 ---
 
