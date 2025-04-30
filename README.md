@@ -1,70 +1,118 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 📅 LMU EventFlow
 
-## Available Scripts
+LMU EventFlow is a secure, role-based event management platform tailored for the Loyola Marymount University (LMU) community. Built by students to address real organizational challenges on campus, it streamlines the process of scheduling, approving, and managing events—while enabling live collaboration across departments like ITS, Sodexo, and Facilities.
 
-In the project directory, you can run:
+## 🚀 Live Demo
 
-### `npm start`
+> [LMU EventFlow (13-week project)](https://github.com/Vraj08/LMU-EVENTFLOW)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📌 Features
 
-### `npm test`
+- 🔐 **Secure Login** via LMU email + OTP verification (`@lmu.edu`, `@lion.lmu.edu`)
+- 📆 **Event Scheduling & Approval Workflow** with real-time status updates
+- 👥 **Role-Based Dashboards** for Students, Faculty, Admins, ITS, Sodexo, and more
+- 💬 **Live Chat** for Resource Requests (tech, food, space, etc.)
+- 📚 **Room Booking** tool for real-time availability and reservations
+- 📲 **Responsive Design** with a personalized UI per user role
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🎯 Project Goals
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+| Goal | Description |
+|------|-------------|
+| ✅ Centralized Scheduling | Avoid double bookings; one portal for all |
+| ✅ Role-Specific Access | Personalized dashboards with permission logic |
+| ✅ Integrated Resource Requests | Chat and coordinate with support departments |
+| ✅ Real-Time Communication | Ensure event clarity and accountability |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+---
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🧩 Tech Stack
 
-### `npm run eject`
+- **Frontend**: React.js, Tailwind CSS, Redux Toolkit  
+- **Backend**: Node.js, Express.js  
+- **Database**: MongoDB (Mongoose ODM)  
+- **Authentication**: OTP email via Nodemailer  
+- **Deployment**: Vercel (frontend) & Render (backend)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+---
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📈 Project Management
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- **Methodology**: Agile Scrum – 13 weekly sprints
+- **Tracking**: Jira + digitized Excel-based Scrum board
+- **Charts**: 
+  - 📊 Burnup: Tracked completed story points vs ideal trajectory
+  - 📉 Burndown: Tracked remaining story points toward zero
+- **Velocity**: ~20 story points per sprint (277 total)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+| Sprint | Scrum Master | Total Tasks | Story Points | Key Highlights |
+|--------|---------------|-------------|--------------|----------------|
+| 1 | Vraj Patel | 7 | 17 | Repo setup, backend, DB schema |
+| 2 | Divy Patel | 7 | 20 | Basic UI, login OTP |
+| 3 | Jinil Patel | 6 | 18 | Dashboard by role |
+| 4 | Jay Panchal | 6 | 15 | Event creation + data model |
+| 5 | Ayush Prabhakar | 7 | 17 | Admin approval + event list |
+| 6 | Vraj Patel | 7 | 23 | Chat system + ITS routing |
+| 7 | Divy Patel | 8 | 28 | Room booking system |
+| 8 | Jinil Patel | 8 | 20 | Role switch testing |
+| 9 | Jay Panchal | 7 | 17 | RSVP + Event discovery |
+| 10–13 | Team Rotation | 26 | 82 | Bug fixing, UI polish, final testing |
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🔄 Challenges & Agile Responses
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+| Challenge | Agile Response |
+|----------|----------------|
+| Role-based UI complexity | Sprint backlog reprioritization after sprint review |
+| Scope creep mid-sprint | Introduced Sprint Commitment Rule – no new tasks unless critical |
+| Auto-approval risk | Adapted to admin approval based on test sprint feedback |
+| Time constraints (midterms) | Flexible sprint velocity; shifted story point targets |
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 📊 Charts
 
-### Analyzing the Bundle Size
+| Chart | Description |
+|-------|-------------|
+| ![Burnup Chart](Burn-Up%20Chart.png) | Completed story points by sprint vs ideal |
+| ![Burndown Chart](Burn-Down%20Chart.png) | Remaining story points to 0 by Sprint 13 |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## 📂 Folder Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```bash
+LMU-EventFlow/
+├── backend/
+│   └── models/, routes/, controllers/
+├── frontend/
+│   └── components/, pages/, redux/
+├── public/
+├── .env
+├── README.md
+```
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 🙋‍♂️ Team
 
-### Deployment
+- **Vraj Patel** 
+- **Divy Patel** 
+- **Jinil Patel** 
+- **Ayush Prabhakar** 
+- **Jay Panchal** 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+## 🏁 Final Outcome
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+✅ All critical features completed  
+✅ 277 story points delivered over 13 sprints  
+✅ Role-based security + resource workflows tested  
+✅ Fully functional MVP deployed  
