@@ -41,6 +41,52 @@ LMU EventFlow is a secure, role-based event management platform tailored for the
 
 ---
 
+## 📸 Screenshots
+
+![Screenshot](screenshots/Screenshot%20(2).png)  
+![Screenshot](screenshots/Screenshot%20(3).png)  
+![Screenshot](screenshots/Screenshot%20(4).png)  
+![Screenshot](screenshots/Screenshot%20(5).png)  
+![Screenshot](screenshots/Screenshot%20(6).png)  
+![Screenshot](screenshots/Screenshot%20(7).png)  
+![Screenshot](screenshots/Screenshot%20(8).png)  
+![Screenshot](screenshots/Screenshot%20(9).png)  
+![Screenshot](screenshots/Screenshot%20(10).png)  
+![Screenshot](screenshots/Screenshot%20(11).png)  
+![Screenshot](screenshots/Screenshot%20(12).png)  
+![Screenshot](screenshots/Screenshot%20(13).png)  
+![Screenshot](screenshots/Screenshot%20(14).png)  
+![Screenshot](screenshots/Screenshot%20(15).png)  
+![Screenshot](screenshots/Screenshot%20(16).png)  
+![Screenshot](screenshots/Screenshot%20(17).png)  
+![Screenshot](screenshots/Screenshot%20(18).png)  
+![Screenshot](screenshots/Screenshot%20(19).png)  
+![Screenshot](screenshots/Screenshot%20(20).png)  
+![Screenshot](screenshots/Screenshot%20(21).png)  
+![Screenshot](screenshots/Screenshot%20(22).png)  
+![Screenshot](screenshots/Screenshot%20(23).png)  
+![Screenshot](screenshots/Screenshot%20(24).png)  
+![Screenshot](screenshots/Screenshot%20(25).png)  
+![Screenshot](screenshots/Screenshot%20(26).png)  
+![Screenshot](screenshots/Screenshot%20(27).png)  
+![Screenshot](screenshots/Screenshot%20(28).png)  
+![Screenshot](screenshots/Screenshot%20(29).png)  
+![Screenshot](screenshots/Screenshot%20(30).png)  
+![Screenshot](screenshots/Screenshot%20(31).png)  
+![Screenshot](screenshots/Screenshot%20(32).png)  
+![Screenshot](screenshots/Screenshot%20(33).png)  
+![Screenshot](screenshots/Screenshot%20(34).png)  
+![Screenshot](screenshots/Screenshot%20(35).png)  
+![Screenshot](screenshots/Screenshot%20(36).png)  
+![Screenshot](screenshots/Screenshot%20(37).png)  
+![Screenshot](screenshots/Screenshot%20(38).png)  
+![Screenshot](screenshots/Screenshot%20(39).png)  
+![Screenshot](screenshots/Screenshot%20(40).png)  
+![Screenshot](screenshots/Screenshot%20(41).png)  
+![Screenshot](screenshots/Screenshot%20(42).png)  
+![Screenshot](screenshots/Screenshot%20(43).png)
+---
+
 ## 📈 Project Management
 
 - **Methodology**: Agile Scrum – 13 weekly sprints
